@@ -2,16 +2,17 @@
   "name": "Soccer Predictor AI",
   "short_name": "Soccer AI",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#07111f",
   "description": "AI-powered soccer predictions, daily match insights and football statistics.",
-  "icons": "icons": [
-  {
-    "src": "icon.svg",
-    "sizes": "any",
-    "type": "image/svg+xml",
-    "purpose": "any maskable"
-  }
-]
-
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
