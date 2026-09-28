@@ -144,6 +144,7 @@ button:active {
   font-size: 10px;
   color: #8ea2bd;
   letter-spacing: 1px;
+  margin-top: 10px;
 }
 
 .prediction {
@@ -153,17 +154,54 @@ button:active {
   margin: 8px 0;
 }
 
+.advice {
+  text-align: center;
+  color: #b7c4d8;
+  font-size: 13px;
+  margin: 7px 0;
+}
+
+.score {
+  text-align: center;
+  color: #8fb5ff;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.probabilities {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.probability {
+  background: #15243a;
+  border-radius: 8px;
+  padding: 9px 4px;
+  text-align: center;
+  font-size: 11px;
+  color: #9fb0c7;
+}
+
+.probability strong {
+  display: block;
+  color: white;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
 .confidence {
   display: flex;
   justify-content: space-between;
   color: #a8b7ca;
   font-size: 12px;
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 .confidence-value {
   font-weight: bold;
-  color: #ffffff;
+  color: #5dffad;
 }
 
 .bar {
@@ -210,7 +248,7 @@ button:active {
   </div>
 
   <div class="subtitle">
-    Live Football Data • Daily Top 10
+    Live Football Data • AI Predictions • Daily Top 10
   </div>
 
   <div class="status">
@@ -252,7 +290,7 @@ button:active {
 <div class="footer">
   Soccer Predictor AI Live 10
   <br>
-  Live fixture data powered by API-Sports
+  Live football data and predictions powered by API-Sports
 </div>
 
 <script>
@@ -284,7 +322,7 @@ function updateDate() {
 
 
 /* =========================
-   LOAD LIVE FIXTURES
+   LOAD FIXTURES
 ========================= */
 
 async function loadFixtures() {
@@ -296,11 +334,11 @@ async function loadFixtures() {
     document.getElementById("system");
 
   system.textContent =
-    "🔄 Connecting to API-Sports...";
+    "🔄 Loading live fixtures...";
 
   container.innerHTML = `
     <div class="loading">
-      Loading live fixtures...
+      Loading live football fixtures...
     </div>
   `;
 
@@ -312,12 +350,10 @@ async function loadFixtures() {
       );
 
     if (!response.ok) {
-
       throw new Error(
-        "Server returned " +
+        "Fixture server error: " +
         response.status
       );
-
     }
 
     const data =
@@ -330,26 +366,27 @@ async function loadFixtures() {
 
       fixtures = [];
 
+      system.textContent =
+        "🟡 No fixtures available";
+
       container.innerHTML = `
         <div class="loading">
-          No upcoming fixtures found.
+          No fixtures available right now.
+          <br><br>
+          Tap Refresh to try again.
         </div>
       `;
-
-      system.textContent =
-        "🟡 No fixtures returned";
 
       return;
     }
 
-    fixtures = data.response;
+    fixtures =
+      data.response.slice(0, 10);
 
     system.textContent =
-      `🟢 Live data connected • ${fixtures.length} fixtures found`;
+      `🟢 Live data connected • ${fixtures.length} matches`;
 
-    renderFixtures(
-      fixtures.slice(0, 10)
-    );
+    renderFixtures();
 
   }
 
@@ -358,11 +395,11 @@ async function loadFixtures() {
     console.error(error);
 
     system.textContent =
-      "🔴 Unable to connect to live data";
+      "🔴 Unable to load live data";
 
     container.innerHTML = `
       <div class="error">
-        ⚠️ Could not load live fixtures.
+        ⚠️ Could not load fixtures.
         <br><br>
         Tap Refresh to try again.
       </div>
@@ -374,22 +411,17 @@ async function loadFixtures() {
 
 
 /* =========================
-   GENERATE TOP 10
+   GENERATE 10
 ========================= */
 
 function generatePredictions() {
 
   if (!fixtures.length) {
-
     loadFixtures();
-
     return;
   }
 
-  const selected =
-    fixtures.slice(0, 10);
-
-  renderFixtures(selected);
+  renderFixtures();
 
 }
 
@@ -398,7 +430,7 @@ function generatePredictions() {
    RENDER MATCHES
 ========================= */
 
-function renderFixtures(list) {
+function renderFixtures() {
 
   const container =
     document.getElementById(
@@ -407,7 +439,7 @@ function renderFixtures(list) {
 
   container.innerHTML = "";
 
-  list.forEach(
+  fixtures.forEach(
     (fixture, index) => {
 
       const home =
@@ -418,6 +450,9 @@ function renderFixtures(list) {
 
       const league =
         fixture.league.name;
+
+      const fixtureId =
+        fixture.fixture.id;
 
       const date =
         new Date(
@@ -470,29 +505,62 @@ function renderFixtures(list) {
         </div>
 
         <div class="match-time">
-
           🕐 ${time}
-
         </div>
 
         <div class="label">
-          FIXTURE DATA
+          AI PREDICTION
         </div>
 
-        <div class="prediction">
+        <div class="prediction"
+             id="prediction-${fixtureId}">
+          🔄 Analyzing match...
+        </div>
 
-          Awaiting prediction model
+        <div class="advice"
+             id="advice-${fixtureId}">
+          Loading prediction model...
+        </div>
+
+        <div class="score"
+             id="score-${fixtureId}">
+        </div>
+
+        <div class="probabilities">
+
+          <div class="probability">
+            HOME
+            <strong id="home-${fixtureId}">
+              -
+            </strong>
+          </div>
+
+          <div class="probability">
+            DRAW
+            <strong id="draw-${fixtureId}">
+              -
+            </strong>
+          </div>
+
+          <div class="probability">
+            AWAY
+            <strong id="away-${fixtureId}">
+              -
+            </strong>
+          </div>
 
         </div>
 
         <div class="confidence">
 
           <span>
-            Live fixture
+            Model signal
           </span>
 
-          <span class="confidence-value">
-            DATA
+          <span
+            class="confidence-value"
+            id="confidence-${fixtureId}">
+            -
           </span>
 
         </div>
@@ -501,7 +569,8 @@ function renderFixtures(list) {
 
           <div
             class="fill"
-            style="width:100%">
+            id="bar-${fixtureId}"
+            style="width:0%">
           </div>
 
         </div>
@@ -510,7 +579,264 @@ function renderFixtures(list) {
 
       container.appendChild(card);
 
+      loadPrediction(
+        fixtureId,
+        home,
+        away
+      );
+
     }
+  );
+
+}
+
+
+/* =========================
+   LOAD PREDICTION
+========================= */
+
+async function loadPrediction(
+  fixtureId,
+  home,
+  away
+) {
+
+  try {
+
+    const response =
+      await fetch(
+        `${API_URL}/api/prediction?fixture=${fixtureId}`
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        "Prediction server error"
+      );
+    }
+
+    const data =
+      await response.json();
+
+    if (
+      !data.response ||
+      !data.response.length
+    ) {
+
+      setPredictionUnavailable(
+        fixtureId
+      );
+
+      return;
+    }
+
+    const prediction =
+      data.response[0].predictions;
+
+    if (!prediction) {
+
+      setPredictionUnavailable(
+        fixtureId
+      );
+
+      return;
+    }
+
+    displayPrediction(
+      fixtureId,
+      prediction,
+      home,
+      away
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Prediction error:",
+      error
+    );
+
+    setPredictionUnavailable(
+      fixtureId
+    );
+
+  }
+
+}
+
+
+/* =========================
+   DISPLAY PREDICTION
+========================= */
+
+function displayPrediction(
+  fixtureId,
+  prediction,
+  home,
+  away
+) {
+
+  const winner =
+    prediction.winner;
+
+  const percent =
+    prediction.percent || {};
+
+  const homePercent =
+    percent.home || "-";
+
+  const drawPercent =
+    percent.draw || "-";
+
+  const awayPercent =
+    percent.away || "-";
+
+  let predictionText =
+    "No clear winner";
+
+  if (
+    winner &&
+    winner.name
+  ) {
+
+    predictionText =
+      winner.name;
+
+  }
+
+  const advice =
+    prediction.advice ||
+    "Model prediction available";
+
+  const goals =
+    prediction.goals || {};
+
+  let scoreText = "";
+
+  if (
+    goals.home != null &&
+    goals.away != null
+  ) {
+
+    scoreText =
+      `Estimated score: ${goals.home} - ${goals.away}`;
+
+  }
+
+  const underOver =
+    prediction.under_over;
+
+  if (underOver) {
+
+    scoreText +=
+      scoreText
+        ? ` • ${underOver}`
+        : underOver;
+
+  }
+
+  document.getElementById(
+    `prediction-${fixtureId}`
+  ).textContent =
+    `🎯 ${predictionText}`;
+
+  document.getElementById(
+    `advice-${fixtureId}`
+  ).textContent =
+    advice;
+
+  document.getElementById(
+    `score-${fixtureId}`
+  ).textContent =
+    scoreText;
+
+  document.getElementById(
+    `home-${fixtureId}`
+  ).textContent =
+    homePercent;
+
+  document.getElementById(
+    `draw-${fixtureId}`
+  ).textContent =
+    drawPercent;
+
+  document.getElementById(
+    `away-${fixtureId}`
+  ).textContent =
+    awayPercent;
+
+
+  /* Calculate strongest probability */
+
+  const numbers = [
+    parsePercent(homePercent),
+    parsePercent(drawPercent),
+    parsePercent(awayPercent)
+  ].filter(
+    value => !isNaN(value)
+  );
+
+  if (numbers.length) {
+
+    const confidence =
+      Math.max(...numbers);
+
+    document.getElementById(
+      `confidence-${fixtureId}`
+    ).textContent =
+      `${confidence}%`;
+
+    document.getElementById(
+      `bar-${fixtureId}`
+    ).style.width =
+      `${confidence}%`;
+
+  }
+
+}
+
+
+/* =========================
+   NO PREDICTION
+========================= */
+
+function setPredictionUnavailable(
+  fixtureId
+) {
+
+  document.getElementById(
+    `prediction-${fixtureId}`
+  ).textContent =
+    "⚪ Prediction unavailable";
+
+  document.getElementById(
+    `advice-${fixtureId}`
+  ).textContent =
+    "API-Sports has no prediction data for this fixture.";
+
+  document.getElementById(
+    `confidence-${fixtureId}`
+  ).textContent =
+    "N/A";
+
+}
+
+
+/* =========================
+   PERCENTAGE
+========================= */
+
+function parsePercent(value) {
+
+  if (
+    typeof value !== "string"
+  ) {
+    return NaN;
+  }
+
+  return parseFloat(
+    value.replace("%", "")
   );
 
 }
@@ -533,7 +859,7 @@ function escapeHTML(value) {
 
 
 /* =========================
-   START APP
+   START
 ========================= */
 
 updateDate();
