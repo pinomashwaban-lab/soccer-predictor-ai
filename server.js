@@ -10,10 +10,12 @@ function send(res, status, data) {
     "Access-Control-Allow-Methods": "GET, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type"
   });
+
   res.end(JSON.stringify(data));
 }
 
 const server = http.createServer(async (req, res) => {
+
   if (req.method === "OPTIONS") {
     return send(res, 204, {});
   }
@@ -27,6 +29,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.url === "/api/fixtures") {
+
     if (!API_KEY) {
       return send(res, 500, {
         error: "API key is not configured on the server."
@@ -34,8 +37,12 @@ const server = http.createServer(async (req, res) => {
     }
 
     try {
+
+      const today =
+        new Date().toISOString().split("T")[0];
+
       const response = await fetch(
-        "https://v3.football.api-sports.io/fixtures?next=20",
+        `https://v3.football.api-sports.io/fixtures?date=${today}`,
         {
           headers: {
             "x-apisports-key": API_KEY
@@ -46,16 +53,20 @@ const server = http.createServer(async (req, res) => {
       const data = await response.json();
 
       return send(res, response.status, data);
+
     } catch (error) {
+
       return send(res, 500, {
         error: "Could not connect to API-Sports."
       });
+
     }
   }
 
   return send(res, 404, {
     error: "Endpoint not found"
   });
+
 });
 
 server.listen(PORT, () => {
