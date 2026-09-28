@@ -14,6 +14,19 @@ function send(res, status, data) {
   res.end(JSON.stringify(data));
 }
 
+async function apiRequest(url) {
+  const response = await fetch(url, {
+    headers: {
+      "x-apisports-key": API_KEY
+    }
+  });
+
+  return {
+    status: response.status,
+    data: await response.json()
+  };
+}
+
 const server = http.createServer(async (req, res) => {
 
   if (req.method === "OPTIONS") {
@@ -28,6 +41,10 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
+  /*
+   * TODAY'S FIXTURES
+   */
+
   if (req.url === "/api/fixtures") {
 
     if (!API_KEY) {
@@ -41,23 +58,71 @@ const server = http.createServer(async (req, res) => {
       const today =
         new Date().toISOString().split("T")[0];
 
-      const response = await fetch(
-        `https://v3.football.api-sports.io/fixtures?date=${today}`,
-        {
-          headers: {
-            "x-apisports-key": API_KEY
-          }
-        }
+      const result = await apiRequest(
+        `https://v3.football.api-sports.io/fixtures?date=${today}`
       );
 
-      const data = await response.json();
-
-      return send(res, response.status, data);
+      return send(
+        res,
+        result.status,
+        result.data
+      );
 
     } catch (error) {
 
       return send(res, 500, {
         error: "Could not connect to API-Sports."
+      });
+
+    }
+  }
+
+  /*
+   * MATCH PREDICTION
+   *
+   * Example:
+   * /api/prediction?fixture=123456
+   */
+
+  if (req.url.startsWith("/api/prediction")) {
+
+    if (!API_KEY) {
+      return send(res, 500, {
+        error: "API key is not configured on the server."
+      });
+    }
+
+    try {
+
+      const url =
+        new URL(
+          req.url,
+          `http://${req.headers.host}`
+        );
+
+      const fixture =
+        url.searchParams.get("fixture");
+
+      if (!fixture) {
+        return send(res, 400, {
+          error: "Fixture ID is required."
+        });
+      }
+
+      const result = await apiRequest(
+        `https://v3.football.api-sports.io/predictions?fixture=${fixture}`
+      );
+
+      return send(
+        res,
+        result.status,
+        result.data
+      );
+
+    } catch (error) {
+
+      return send(res, 500, {
+        error: "Could not retrieve prediction."
       });
 
     }
@@ -70,5 +135,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(
+    `Soccer Predictor AI server running on port ${PORT}`
+  );
 });
