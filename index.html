@@ -3,387 +3,542 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Soccer Predictor AI</title>
-<title>Soccer Predictor AI</title>
-<link rel="manifest" href="manifest.json">
+
+<title>Soccer Predictor AI Live 10</title>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-
-body{
-font-family:Arial,sans-serif;
-background:#07111f;
-color:white;
+* {
+  box-sizing: border-box;
 }
 
-.app{
-max-width:700px;
-margin:auto;
-padding-bottom:40px;
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #08111f;
+  color: white;
 }
 
-header{
-text-align:center;
-padding:28px 18px;
-background:#0b192d;
-border-bottom:1px solid #1d3554;
+.header {
+  padding: 25px 15px;
+  text-align: center;
+  background: #0d1b2f;
+  border-bottom: 1px solid #243653;
 }
 
-.logo{font-size:40px}
-
-h1{
-font-size:24px;
-margin:8px 0;
+.logo {
+  font-size: 28px;
+  font-weight: bold;
 }
 
-.subtitle{
-color:#91a4bd;
-font-size:13px;
+.subtitle {
+  margin-top: 7px;
+  color: #9fb0c7;
+  font-size: 14px;
 }
 
-.status{
-margin:18px;
-padding:16px;
-text-align:center;
-background:#0d2038;
-border:1px solid #1d4168;
-border-radius:14px;
+.status {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  background: #123c2b;
+  color: #5dffad;
+  font-size: 13px;
 }
 
-.online{
-color:#32d583;
-font-weight:bold;
+.container {
+  width: 100%;
+  max-width: 650px;
+  margin: auto;
+  padding: 15px;
 }
 
-.dot{
-display:inline-block;
-width:9px;
-height:9px;
-background:#32d583;
-border-radius:50%;
-margin-right:6px;
+.date {
+  text-align: center;
+  color: #b7c4d8;
+  margin: 12px 0 18px;
 }
 
-.date{
-margin-top:7px;
-color:#91a4bd;
-font-size:12px;
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
-.buttons{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-padding:0 18px 18px;
+button {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 10px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #1769ff;
+  color: white;
 }
 
-button{
-border:none;
-border-radius:12px;
-padding:14px;
-color:white;
-font-weight:bold;
-background:#1769e0;
+button:active {
+  transform: scale(.98);
 }
 
-.refresh{
-background:#152941;
+.refresh {
+  background: #25364f;
 }
 
-.title{
-padding:5px 18px 14px;
-font-size:18px;
-font-weight:bold;
+.system {
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  background: #101e32;
+  color: #9fb0c7;
+  font-size: 13px;
 }
 
-.match{
-margin:0 18px 14px;
-padding:17px;
-background:#0c1b2f;
-border:1px solid #1d3554;
-border-radius:16px;
+.match {
+  background: #0f1d31;
+  border: 1px solid #263957;
+  border-radius: 15px;
+  padding: 17px;
+  margin-bottom: 14px;
 }
 
-.top{
-display:flex;
-justify-content:space-between;
-margin-bottom:12px;
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+  color: #91a4bf;
 }
 
-.number{
-color:#6f8ba8;
-font-size:12px;
-font-weight:bold;
+.number {
+  font-weight: bold;
 }
 
-.league{
-color:#91a4bd;
-font-size:11px;
+.league {
+  text-align: right;
 }
 
-.teams{
-font-size:17px;
-font-weight:bold;
-line-height:1.5;
-margin-bottom:14px;
+.teams {
+  text-align: center;
+  font-size: 19px;
+  font-weight: bold;
+  line-height: 1.7;
+  margin: 15px 0 5px;
 }
 
-.vs{
-color:#7189a4;
-font-size:12px;
+.vs {
+  font-size: 12px;
+  color: #7f92ad;
 }
 
-.label{
-color:#91a4bd;
-font-size:11px;
+.match-time {
+  text-align: center;
+  color: #8fb5ff;
+  font-size: 14px;
+  margin-bottom: 15px;
 }
 
-.prediction{
-font-size:19px;
-font-weight:bold;
-margin:6px 0 12px;
+.label {
+  text-align: center;
+  font-size: 10px;
+  color: #8ea2bd;
+  letter-spacing: 1px;
 }
 
-.confidence{
-display:flex;
-justify-content:space-between;
-font-size:12px;
-margin-bottom:7px;
+.prediction {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 8px 0;
 }
 
-.confidence-value{
-color:#32d583;
-font-weight:bold;
+.confidence {
+  display: flex;
+  justify-content: space-between;
+  color: #a8b7ca;
+  font-size: 12px;
+  margin-top: 12px;
 }
 
-.bar{
-height:7px;
-background:#172b43;
-border-radius:20px;
-overflow:hidden;
+.confidence-value {
+  font-weight: bold;
+  color: #ffffff;
 }
 
-.fill{
-height:100%;
-background:#2dd58c;
+.bar {
+  height: 7px;
+  background: #26364e;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 7px;
 }
 
-.info{
-margin:20px 18px;
-padding:16px;
-background:#0b192d;
-border:1px solid #1d3554;
-border-radius:14px;
+.fill {
+  height: 100%;
+  background: #2878ff;
+  border-radius: 10px;
 }
 
-.info h3{
-margin-bottom:8px;
+.loading {
+  text-align: center;
+  padding: 30px 10px;
+  color: #9fb0c7;
 }
 
-.info p{
-color:#91a4bd;
-font-size:12px;
-line-height:1.6;
+.error {
+  text-align: center;
+  padding: 20px;
+  color: #ff9c9c;
 }
 
-footer{
-text-align:center;
-color:#50677f;
-font-size:11px;
+.footer {
+  text-align: center;
+  padding: 25px;
+  color: #64758d;
+  font-size: 11px;
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="header">
 
-<header>
-<div class="logo">⚽</div>
-<h1>Soccer Predictor AI</h1>
-<div class="subtitle">AI Football Prediction Dashboard</div>
-</header>
+  <div class="logo">
+    ⚽ Soccer Predictor AI
+  </div>
 
-<div class="status">
+  <div class="subtitle">
+    Live Football Data • Daily Top 10
+  </div>
 
-<div>
-<span class="dot"></span>
-<span class="online">SYSTEM ONLINE</span>
-</div>
-
-<div class="date" id="date"></div>
+  <div class="status">
+    🟢 SYSTEM ONLINE
+  </div>
 
 </div>
 
-<div class="buttons">
+<div class="container">
 
-<button onclick="generatePredictions()">
-🔮 Generate 10
-</button>
+  <div id="date" class="date"></div>
 
-<button class="refresh" onclick="generatePredictions()">
-🔄 Refresh
-</button>
+  <div class="controls">
+
+    <button onclick="generatePredictions()">
+      🔮 Generate 10
+    </button>
+
+    <button class="refresh" onclick="loadFixtures()">
+      🔄 Refresh
+    </button>
+
+  </div>
+
+  <div id="system" class="system">
+    Connecting to live football data...
+  </div>
+
+  <div id="predictions">
+
+    <div class="loading">
+      Loading fixtures...
+    </div>
+
+  </div>
 
 </div>
 
-<div class="title">
-Today's Predictions
-</div>
-
-<div id="predictions"></div>
-
-<div class="info">
-
-<h3>🤖 AI Prediction Engine</h3>
-
-<p>
-Generates 10 football prediction cards
-with prediction types and confidence
-percentages. Live football data will be
-connected in the next version.
-</p>
-
-</div>
-
-<footer>
-Soccer Predictor AI v1.0
-</footer>
-
+<div class="footer">
+  Soccer Predictor AI Live 10
+  <br>
+  Live fixture data powered by API-Sports
 </div>
 
 <script>
 
-const matches=[
+const API_URL =
+  "https://soccer-predictor-ai-1.onrender.com";
 
-["Manchester City","Arsenal","Premier League"],
-["Liverpool","Chelsea","Premier League"],
-["Manchester United","Tottenham","Premier League"],
-["Real Madrid","Barcelona","La Liga"],
-["Atletico Madrid","Sevilla","La Liga"],
-["Bayern Munich","Dortmund","Bundesliga"],
-["Leverkusen","RB Leipzig","Bundesliga"],
-["Inter Milan","AC Milan","Serie A"],
-["Juventus","Napoli","Serie A"],
-["PSG","Lyon","Ligue 1"],
-["Ajax","PSV","Eredivisie"],
-["Porto","Benfica","Primeira Liga"],
-["Sporting CP","Braga","Primeira Liga"],
-["River Plate","Boca Juniors","Argentina"],
-["Al Ahly","Zamalek","Egypt"]
+let fixtures = [];
 
-];
 
-const predictionTypes=[
+/* =========================
+   DATE
+========================= */
 
-"Home Win",
-"Draw",
-"Away Win",
-"Over 1.5 Goals",
-"Over 2.5 Goals",
-"Both Teams To Score"
+function updateDate() {
 
-];
-
-function generatePredictions(){
-
-const container=document.getElementById("predictions");
-
-container.innerHTML="";
-
-const selected=[...matches]
-.sort(()=>Math.random()-0.5)
-.slice(0,10);
-
-selected.forEach((match,index)=>{
-
-const prediction=
-predictionTypes[
-Math.floor(Math.random()*predictionTypes.length)
-];
-
-const confidence=
-Math.floor(Math.random()*16)+72;
-
-const card=document.createElement("div");
-
-card.className="match";
-
-card.innerHTML=`
-
-<div class="top">
-
-<span class="number">
-MATCH ${index+1}
-</span>
-
-<span class="league">
-${match[2]}
-</span>
-
-</div>
-
-<div class="teams">
-
-${match[0]}
-
-<br>
-
-<span class="vs">VS</span>
-
-<br>
-
-${match[1]}
-
-</div>
-
-<div class="label">
-AI PREDICTION
-</div>
-
-<div class="prediction">
-${prediction}
-</div>
-
-<div class="confidence">
-
-<span>AI Confidence</span>
-
-<span class="confidence-value">
-${confidence}%
-</span>
-
-</div>
-
-<div class="bar">
-
-<div
-class="fill"
-style="width:${confidence}%">
-</div>
-
-</div>
-
-`;
-
-container.appendChild(card);
-
-});
+  document.getElementById("date").textContent =
+    new Date().toLocaleDateString(
+      undefined,
+      {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      }
+    );
 
 }
 
-document.getElementById("date").textContent=
-new Date().toLocaleDateString(
-undefined,
-{
-weekday:"long",
-year:"numeric",
-month:"long",
-day:"numeric"
-}
-);
 
-generatePredictions();
+/* =========================
+   LOAD LIVE FIXTURES
+========================= */
+
+async function loadFixtures() {
+
+  const container =
+    document.getElementById("predictions");
+
+  const system =
+    document.getElementById("system");
+
+  system.textContent =
+    "🔄 Connecting to API-Sports...";
+
+  container.innerHTML = `
+    <div class="loading">
+      Loading live fixtures...
+    </div>
+  `;
+
+  try {
+
+    const response =
+      await fetch(
+        `${API_URL}/api/fixtures`
+      );
+
+    if (!response.ok) {
+
+      throw new Error(
+        "Server returned " +
+        response.status
+      );
+
+    }
+
+    const data =
+      await response.json();
+
+    if (
+      !data.response ||
+      data.response.length === 0
+    ) {
+
+      fixtures = [];
+
+      container.innerHTML = `
+        <div class="loading">
+          No upcoming fixtures found.
+        </div>
+      `;
+
+      system.textContent =
+        "🟡 No fixtures returned";
+
+      return;
+    }
+
+    fixtures = data.response;
+
+    system.textContent =
+      `🟢 Live data connected • ${fixtures.length} fixtures found`;
+
+    renderFixtures(
+      fixtures.slice(0, 10)
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    system.textContent =
+      "🔴 Unable to connect to live data";
+
+    container.innerHTML = `
+      <div class="error">
+        ⚠️ Could not load live fixtures.
+        <br><br>
+        Tap Refresh to try again.
+      </div>
+    `;
+
+  }
+
+}
+
+
+/* =========================
+   GENERATE TOP 10
+========================= */
+
+function generatePredictions() {
+
+  if (!fixtures.length) {
+
+    loadFixtures();
+
+    return;
+  }
+
+  const selected =
+    fixtures.slice(0, 10);
+
+  renderFixtures(selected);
+
+}
+
+
+/* =========================
+   RENDER MATCHES
+========================= */
+
+function renderFixtures(list) {
+
+  const container =
+    document.getElementById(
+      "predictions"
+    );
+
+  container.innerHTML = "";
+
+  list.forEach(
+    (fixture, index) => {
+
+      const home =
+        fixture.teams.home.name;
+
+      const away =
+        fixture.teams.away.name;
+
+      const league =
+        fixture.league.name;
+
+      const date =
+        new Date(
+          fixture.fixture.date
+        );
+
+      const time =
+        date.toLocaleTimeString(
+          [],
+          {
+            hour: "2-digit",
+            minute: "2-digit"
+          }
+        );
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "match";
+
+      card.innerHTML = `
+
+        <div class="top">
+
+          <span class="number">
+            MATCH ${index + 1}
+          </span>
+
+          <span class="league">
+            ${escapeHTML(league)}
+          </span>
+
+        </div>
+
+        <div class="teams">
+
+          ${escapeHTML(home)}
+
+          <br>
+
+          <span class="vs">
+            VS
+          </span>
+
+          <br>
+
+          ${escapeHTML(away)}
+
+        </div>
+
+        <div class="match-time">
+
+          🕐 ${time}
+
+        </div>
+
+        <div class="label">
+          FIXTURE DATA
+        </div>
+
+        <div class="prediction">
+
+          Awaiting prediction model
+
+        </div>
+
+        <div class="confidence">
+
+          <span>
+            Live fixture
+          </span>
+
+          <span class="confidence-value">
+            DATA
+          </span>
+
+        </div>
+
+        <div class="bar">
+
+          <div
+            class="fill"
+            style="width:100%">
+          </div>
+
+        </div>
+
+      `;
+
+      container.appendChild(card);
+
+    }
+  );
+
+}
+
+
+/* =========================
+   SECURITY
+========================= */
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================
+   START APP
+========================= */
+
+updateDate();
+
+loadFixtures();
 
 </script>
 
