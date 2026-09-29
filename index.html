@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Soccer Predictor AI Live</title>
 
 <style>
@@ -12,43 +13,71 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: #07110b;
-    color: white;
+    padding: 0;
+    background: #061009;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 header {
-    background: #0d1f13;
-    padding: 18px;
+    background: linear-gradient(135deg, #071a0c, #0d2915);
+    border-bottom: 2px solid #20e879;
+    padding: 20px 15px;
     text-align: center;
-    border-bottom: 2px solid #18d66b;
 }
 
-h1 {
-    margin: 0;
-    color: #18ff78;
+.logo {
     font-size: 25px;
+    font-weight: 900;
+    color: #20ff83;
 }
 
 .subtitle {
-    color: #aaa;
-    margin-top: 6px;
+    margin-top: 7px;
+    color: #a7b5aa;
     font-size: 13px;
 }
 
 .container {
     width: 94%;
-    max-width: 900px;
+    max-width: 950px;
     margin: 18px auto;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.box {
+    background: #0d1a11;
+    border: 1px solid #1d432a;
+    border-radius: 10px;
+    padding: 12px 5px;
+    text-align: center;
+}
+
+.box-title {
+    color: #8c9b90;
+    font-size: 11px;
+}
+
+.box-value {
+    margin-top: 5px;
+    color: #20ff83;
+    font-weight: bold;
+    font-size: 17px;
 }
 
 button {
     width: 100%;
-    padding: 15px;
+    padding: 16px;
     border: none;
-    border-radius: 10px;
-    background: #18d66b;
-    color: #001b09;
+    border-radius: 11px;
+    background: #20e879;
+    color: #001d0b;
     font-size: 17px;
     font-weight: bold;
     cursor: pointer;
@@ -59,55 +88,119 @@ button:active {
     transform: scale(.98);
 }
 
+.secondary {
+    background: #15251a;
+    color: #20ff83;
+    border: 1px solid #24653a;
+}
+
 .status {
-    background: #101c14;
-    border: 1px solid #244a32;
     padding: 13px;
     border-radius: 10px;
-    margin-bottom: 15px;
+    background: #0d1b11;
+    border: 1px solid #204b2d;
     text-align: center;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+.status.good {
+    color: #20ff83;
+}
+
+.status.loading {
+    color: #ffd45a;
+}
+
+.status.error {
+    color: #ff7070;
 }
 
 .card {
-    background: #101a13;
-    border: 1px solid #23462f;
+    background: #0c1710;
+    border: 1px solid #21472d;
     border-radius: 14px;
-    padding: 17px;
-    margin-bottom: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,.25);
+    padding: 16px;
+    margin-bottom: 14px;
 }
 
 .league {
-    color: #18ff78;
-    font-size: 13px;
+    color: #20ff83;
     font-weight: bold;
-    margin-bottom: 10px;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.country {
+    color: #849287;
+    font-size: 11px;
+    margin-bottom: 14px;
 }
 
 .teams {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr 45px 1fr;
+    align-items: center;
+    gap: 8px;
+}
+
+.team {
     text-align: center;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: bold;
 }
 
 .vs {
-    color: #888;
+    text-align: center;
+    color: #7f8d82;
     font-size: 12px;
 }
 
-.prediction {
-    margin-top: 15px;
-    padding: 13px;
-    border-radius: 10px;
-    background: #071b0e;
+.time {
+    text-align: center;
+    color: #aaa;
+    font-size: 11px;
+    margin-top: 8px;
 }
 
-.prediction strong {
-    color: #18ff78;
+.prediction {
+    background: #07170c;
+    border-radius: 10px;
+    margin-top: 14px;
+    padding: 13px;
+}
+
+.prediction-title {
+    color: #8d9b90;
+    font-size: 11px;
+}
+
+.prediction-result {
+    color: #20ff83;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 4px;
 }
 
 .confidence {
-    font-size: 
+    margin-top: 8px;
+    color: #ffffff;
+}
+
+.confidence span {
+    color: #20ff83;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.probabilities {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.prob {
+    background: #0e2114;
+    border-radius: 7px;
+   
