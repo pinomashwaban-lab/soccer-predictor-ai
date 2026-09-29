@@ -1,127 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#07111f">
-  <meta name="description" content="AI-powered soccer predictions, daily match insights and football statistics.">
-  <link rel="manifest" href="manifest.json">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soccer Predictor AI Live</title>
 
-  <title>Soccer Predictor AI</title>
+<style>
+* {
+    box-sizing: border-box;
+}
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #07110b;
+    color: white;
+}
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #07111f;
-      color: white;
-      min-height: 100vh;
-    }
+header {
+    background: #0d1f13;
+    padding: 18px;
+    text-align: center;
+    border-bottom: 2px solid #18d66b;
+}
 
-    header {
-      padding: 22px 16px;
-      text-align: center;
-      background: #0b1729;
-      border-bottom: 1px solid #1b304b;
-    }
+h1 {
+    margin: 0;
+    color: #18ff78;
+    font-size: 25px;
+}
 
-    .logo {
-      width: 70px;
-      height: 70px;
-      margin: auto;
-      border-radius: 18px;
-      background: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 38px;
-    }
+.subtitle {
+    color: #aaa;
+    margin-top: 6px;
+    font-size: 13px;
+}
 
-    h1 {
-      margin: 12px 0 5px;
-      font-size: 25px;
-    }
+.container {
+    width: 94%;
+    max-width: 900px;
+    margin: 18px auto;
+}
 
-    .subtitle {
-      color: #9eb1c8;
-      font-size: 14px;
-    }
+button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #18d66b;
+    color: #001b09;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
 
-    .status {
-      display: inline-block;
-      margin-top: 12px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      background: #123d2a;
-      color: #51e69a;
-      font-size: 12px;
-      font-weight: bold;
-    }
+button:active {
+    transform: scale(.98);
+}
 
-    .container {
-      width: 100%;
-      max-width: 900px;
-      margin: auto;
-      padding: 18px 14px 40px;
-    }
+.status {
+    background: #101c14;
+    border: 1px solid #244a32;
+    padding: 13px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+}
 
-    .controls {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
+.card {
+    background: #101a13;
+    border: 1px solid #23462f;
+    border-radius: 14px;
+    padding: 17px;
+    margin-bottom: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.25);
+}
 
-    button {
-      flex: 1;
-      border: 0;
-      border-radius: 12px;
-      padding: 14px 10px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.league {
+    color: #18ff78;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
 
-    #generateBtn {
-      background: #18a566;
-      color: white;
-    }
+.teams {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+}
 
-    #refreshBtn {
-      background: #17283e;
-      color: white;
-      border: 1px solid #29435f;
-    }
+.vs {
+    color: #888;
+    font-size: 12px;
+}
 
-    button:active {
-      transform: scale(0.98);
-    }
+.prediction {
+    margin-top: 15px;
+    padding: 13px;
+    border-radius: 10px;
+    background: #071b0e;
+}
 
-    .date-box {
-      background: #0b1729;
-      border: 1px solid #1b304b;
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 16px;
-      text-align: center;
-      color: #b7c7d9;
-    }
+.prediction strong {
+    color: #18ff78;
+}
 
-    .prediction-list {
-      display: grid;
-      gap: 14px;
-    }
-
-    .card {
-      background: #0b1729;
-      border: 1px solid #1b304b;
-      border-radius: 16px;
-      padding: 17px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.18);
-    }
-
-    .match-number {
-      color: #6f
+.confidence {
+    font-size: 
