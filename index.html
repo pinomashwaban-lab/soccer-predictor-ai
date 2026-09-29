@@ -1,872 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Soccer Predictor AI Live 10</title>
-
-<style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #08111f;
-  color: white;
-}
-
-.header {
-  padding: 25px 15px;
-  text-align: center;
-  background: #0d1b2f;
-  border-bottom: 1px solid #243653;
-}
-
-.logo {
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.subtitle {
-  margin-top: 7px;
-  color: #9fb0c7;
-  font-size: 14px;
-}
-
-.status {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 7px 14px;
-  border-radius: 20px;
-  background: #123c2b;
-  color: #5dffad;
-  font-size: 13px;
-}
-
-.container {
-  width: 100%;
-  max-width: 650px;
-  margin: auto;
-  padding: 15px;
-}
-
-.date {
-  text-align: center;
-  color: #b7c4d8;
-  margin: 12px 0 18px;
-}
-
-.controls {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-button {
-  flex: 1;
-  border: none;
-  border-radius: 10px;
-  padding: 14px 10px;
-  font-size: 15px;
-  font-weight: bold;
-  cursor: pointer;
-  background: #1769ff;
-  color: white;
-}
-
-button:active {
-  transform: scale(.98);
-}
-
-.refresh {
-  background: #25364f;
-}
-
-.system {
-  text-align: center;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 10px;
-  background: #101e32;
-  color: #9fb0c7;
-  font-size: 13px;
-}
-
-.match {
-  background: #0f1d31;
-  border: 1px solid #263957;
-  border-radius: 15px;
-  padding: 17px;
-  margin-bottom: 14px;
-}
-
-.top {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 11px;
-  color: #91a4bf;
-}
-
-.number {
-  font-weight: bold;
-}
-
-.league {
-  text-align: right;
-}
-
-.teams {
-  text-align: center;
-  font-size: 19px;
-  font-weight: bold;
-  line-height: 1.7;
-  margin: 15px 0 5px;
-}
-
-.vs {
-  font-size: 12px;
-  color: #7f92ad;
-}
-
-.match-time {
-  text-align: center;
-  color: #8fb5ff;
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-
-.label {
-  text-align: center;
-  font-size: 10px;
-  color: #8ea2bd;
-  letter-spacing: 1px;
-  margin-top: 10px;
-}
-
-.prediction {
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-  margin: 8px 0;
-}
-
-.advice {
-  text-align: center;
-  color: #b7c4d8;
-  font-size: 13px;
-  margin: 7px 0;
-}
-
-.score {
-  text-align: center;
-  color: #8fb5ff;
-  font-size: 14px;
-  margin: 8px 0;
-}
-
-.probabilities {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 7px;
-  margin-top: 12px;
-}
-
-.probability {
-  background: #15243a;
-  border-radius: 8px;
-  padding: 9px 4px;
-  text-align: center;
-  font-size: 11px;
-  color: #9fb0c7;
-}
-
-.probability strong {
-  display: block;
-  color: white;
-  font-size: 14px;
-  margin-top: 4px;
-}
-
-.confidence {
-  display: flex;
-  justify-content: space-between;
-  color: #a8b7ca;
-  font-size: 12px;
-  margin-top: 14px;
-}
-
-.confidence-value {
-  font-weight: bold;
-  color: #5dffad;
-}
-
-.bar {
-  height: 7px;
-  background: #26364e;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 7px;
-}
-
-.fill {
-  height: 100%;
-  background: #2878ff;
-  border-radius: 10px;
-}
-
-.loading {
-  text-align: center;
-  padding: 30px 10px;
-  color: #9fb0c7;
-}
-
-.error {
-  text-align: center;
-  padding: 20px;
-  color: #ff9c9c;
-}
-
-.footer {
-  text-align: center;
-  padding: 25px;
-  color: #64758d;
-  font-size: 11px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="header">
-
-  <div class="logo">
-    ⚽ Soccer Predictor AI
-  </div>
-
-  <div class="subtitle">
-    Live Football Data • AI Predictions • Daily Top 10
-  </div>
-
-  <div class="status">
-    🟢 SYSTEM ONLINE
-  </div>
-
-</div>
-
-<div class="container">
-
-  <div id="date" class="date"></div>
-
-  <div class="controls">
-
-    <button onclick="generatePredictions()">
-      🔮 Generate 10
-    </button>
-
-    <button class="refresh" onclick="loadFixtures()">
-      🔄 Refresh
-    </button>
-
-  </div>
-
-  <div id="system" class="system">
-    Connecting to live football data...
-  </div>
-
-  <div id="predictions">
-
-    <div class="loading">
-      Loading fixtures...
-    </div>
-
-  </div>
-
-</div>
-
-<div class="footer">
-  Soccer Predictor AI Live 10
-  <br>
-  Live football data and predictions powered by API-Sports
-</div>
-
-<script>
-
-const API_URL =
-  "https://soccer-predictor-ai-1.onrender.com";
-
-let fixtures = [];
-
-
-/* =========================
-   DATE
-========================= */
-
-function updateDate() {
-
-  document.getElementById("date").textContent =
-    new Date().toLocaleDateString(
-      undefined,
-      {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      }
-    );
-
-}
-
-
-/* =========================
-   LOAD FIXTURES
-========================= */
-
-async function loadFixtures() {
-
-  const container =
-    document.getElementById("predictions");
-
-  const system =
-    document.getElementById("system");
-
-  system.textContent =
-    "🔄 Loading live fixtures...";
-
-  container.innerHTML = `
-    <div class="loading">
-      Loading live football fixtures...
-    </div>
-  `;
-
-  try {
-
-    const response =
-      await fetch(
-        `${API_URL}/api/fixtures`
-      );
-
-    if (!response.ok) {
-      throw new Error(
-        "Fixture server error: " +
-        response.status
-      );
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="AI-powered soccer predictions, daily match insights and football statistics.">
+  <link rel="manifest" href="manifest.json">
+
+  <title>Soccer Predictor AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
     }
 
-    const data =
-      await response.json();
-
-    if (
-      !data.response ||
-      data.response.length === 0
-    ) {
-
-      fixtures = [];
-
-      system.textContent =
-        "🟡 No fixtures available";
-
-      container.innerHTML = `
-        <div class="loading">
-          No fixtures available right now.
-          <br><br>
-          Tap Refresh to try again.
-        </div>
-      `;
-
-      return;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #07111f;
+      color: white;
+      min-height: 100vh;
     }
 
-    fixtures =
-      data.response.slice(0, 10);
-
-    system.textContent =
-      `🟢 Live data connected • ${fixtures.length} matches`;
-
-    renderFixtures();
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-    system.textContent =
-      "🔴 Unable to load live data";
-
-    container.innerHTML = `
-      <div class="error">
-        ⚠️ Could not load fixtures.
-        <br><br>
-        Tap Refresh to try again.
-      </div>
-    `;
-
-  }
-
-}
-
-
-/* =========================
-   GENERATE 10
-========================= */
-
-function generatePredictions() {
-
-  if (!fixtures.length) {
-    loadFixtures();
-    return;
-  }
-
-  renderFixtures();
-
-}
-
-
-/* =========================
-   RENDER MATCHES
-========================= */
-
-function renderFixtures() {
-
-  const container =
-    document.getElementById(
-      "predictions"
-    );
-
-  container.innerHTML = "";
-
-  fixtures.forEach(
-    (fixture, index) => {
-
-      const home =
-        fixture.teams.home.name;
-
-      const away =
-        fixture.teams.away.name;
-
-      const league =
-        fixture.league.name;
-
-      const fixtureId =
-        fixture.fixture.id;
-
-      const date =
-        new Date(
-          fixture.fixture.date
-        );
-
-      const time =
-        date.toLocaleTimeString(
-          [],
-          {
-            hour: "2-digit",
-            minute: "2-digit"
-          }
-        );
-
-      const card =
-        document.createElement("div");
-
-      card.className =
-        "match";
-
-      card.innerHTML = `
-
-        <div class="top">
-
-          <span class="number">
-            MATCH ${index + 1}
-          </span>
-
-          <span class="league">
-            ${escapeHTML(league)}
-          </span>
-
-        </div>
-
-        <div class="teams">
-
-          ${escapeHTML(home)}
-
-          <br>
-
-          <span class="vs">
-            VS
-          </span>
-
-          <br>
-
-          ${escapeHTML(away)}
-
-        </div>
-
-        <div class="match-time">
-          🕐 ${time}
-        </div>
-
-        <div class="label">
-          AI PREDICTION
-        </div>
-
-        <div class="prediction"
-             id="prediction-${fixtureId}">
-          🔄 Analyzing match...
-        </div>
-
-        <div class="advice"
-             id="advice-${fixtureId}">
-          Loading prediction model...
-        </div>
-
-        <div class="score"
-             id="score-${fixtureId}">
-        </div>
-
-        <div class="probabilities">
-
-          <div class="probability">
-            HOME
-            <strong id="home-${fixtureId}">
-              -
-            </strong>
-          </div>
-
-          <div class="probability">
-            DRAW
-            <strong id="draw-${fixtureId}">
-              -
-            </strong>
-          </div>
-
-          <div class="probability">
-            AWAY
-            <strong id="away-${fixtureId}">
-              -
-            </strong>
-          </div>
-
-        </div>
-
-        <div class="confidence">
-
-          <span>
-            Model signal
-          </span>
-
-          <span
-            class="confidence-value"
-            id="confidence-${fixtureId}">
-            -
-          </span>
-
-        </div>
-
-        <div class="bar">
-
-          <div
-            class="fill"
-            id="bar-${fixtureId}"
-            style="width:0%">
-          </div>
-
-        </div>
-
-      `;
-
-      container.appendChild(card);
-
-      loadPrediction(
-        fixtureId,
-        home,
-        away
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================
-   LOAD PREDICTION
-========================= */
-
-async function loadPrediction(
-  fixtureId,
-  home,
-  away
-) {
-
-  try {
-
-    const response =
-      await fetch(
-        `${API_URL}/api/prediction?fixture=${fixtureId}`
-      );
-
-    if (!response.ok) {
-      throw new Error(
-        "Prediction server error"
-      );
+    header {
+      padding: 22px 16px;
+      text-align: center;
+      background: #0b1729;
+      border-bottom: 1px solid #1b304b;
     }
 
-    const data =
-      await response.json();
-
-    if (
-      !data.response ||
-      !data.response.length
-    ) {
-
-      setPredictionUnavailable(
-        fixtureId
-      );
-
-      return;
+    .logo {
+      width: 70px;
+      height: 70px;
+      margin: auto;
+      border-radius: 18px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
     }
 
-    const prediction =
-      data.response[0].predictions;
-
-    if (!prediction) {
-
-      setPredictionUnavailable(
-        fixtureId
-      );
-
-      return;
+    h1 {
+      margin: 12px 0 5px;
+      font-size: 25px;
     }
 
-    displayPrediction(
-      fixtureId,
-      prediction,
-      home,
-      away
-    );
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Prediction error:",
-      error
-    );
-
-    setPredictionUnavailable(
-      fixtureId
-    );
-
-  }
-
-}
-
-
-/* =========================
-   DISPLAY PREDICTION
-========================= */
-
-function displayPrediction(
-  fixtureId,
-  prediction,
-  home,
-  away
-) {
-
-  const winner =
-    prediction.winner;
-
-  const percent =
-    prediction.percent || {};
-
-  const homePercent =
-    percent.home || "-";
-
-  const drawPercent =
-    percent.draw || "-";
-
-  const awayPercent =
-    percent.away || "-";
-
-  let predictionText =
-    "No clear winner";
-
-  if (
-    winner &&
-    winner.name
-  ) {
-
-    predictionText =
-      winner.name;
-
-  }
-
-  const advice =
-    prediction.advice ||
-    "Model prediction available";
-
-  const goals =
-    prediction.goals || {};
-
-  let scoreText = "";
-
-  if (
-    goals.home != null &&
-    goals.away != null
-  ) {
-
-    scoreText =
-      `Estimated score: ${goals.home} - ${goals.away}`;
-
-  }
-
-  const underOver =
-    prediction.under_over;
-
-  if (underOver) {
-
-    scoreText +=
-      scoreText
-        ? ` • ${underOver}`
-        : underOver;
-
-  }
-
-  document.getElementById(
-    `prediction-${fixtureId}`
-  ).textContent =
-    `🎯 ${predictionText}`;
-
-  document.getElementById(
-    `advice-${fixtureId}`
-  ).textContent =
-    advice;
-
-  document.getElementById(
-    `score-${fixtureId}`
-  ).textContent =
-    scoreText;
-
-  document.getElementById(
-    `home-${fixtureId}`
-  ).textContent =
-    homePercent;
-
-  document.getElementById(
-    `draw-${fixtureId}`
-  ).textContent =
-    drawPercent;
-
-  document.getElementById(
-    `away-${fixtureId}`
-  ).textContent =
-    awayPercent;
-
-
-  /* Calculate strongest probability */
-
-  const numbers = [
-    parsePercent(homePercent),
-    parsePercent(drawPercent),
-    parsePercent(awayPercent)
-  ].filter(
-    value => !isNaN(value)
-  );
-
-  if (numbers.length) {
-
-    const confidence =
-      Math.max(...numbers);
-
-    document.getElementById(
-      `confidence-${fixtureId}`
-    ).textContent =
-      `${confidence}%`;
-
-    document.getElementById(
-      `bar-${fixtureId}`
-    ).style.width =
-      `${confidence}%`;
-
-  }
-
-}
-
-
-/* =========================
-   NO PREDICTION
-========================= */
-
-function setPredictionUnavailable(
-  fixtureId
-) {
-
-  document.getElementById(
-    `prediction-${fixtureId}`
-  ).textContent =
-    "⚪ Prediction unavailable";
-
-  document.getElementById(
-    `advice-${fixtureId}`
-  ).textContent =
-    "API-Sports has no prediction data for this fixture.";
-
-  document.getElementById(
-    `confidence-${fixtureId}`
-  ).textContent =
-    "N/A";
-
-}
-
-
-/* =========================
-   PERCENTAGE
-========================= */
-
-function parsePercent(value) {
-
-  if (
-    typeof value !== "string"
-  ) {
-    return NaN;
-  }
-
-  return parseFloat(
-    value.replace("%", "")
-  );
-
-}
-
-
-/* =========================
-   SECURITY
-========================= */
-
-function escapeHTML(value) {
-
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
-}
-
-
-/* =========================
-   START
-========================= */
-
-updateDate();
-
-loadFixtures();
-
-</script>
-
-</body>
-</html>
+    .subtitle {
+      color: #9eb1c8;
+      font-size: 14px;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: #123d2a;
+      color: #51e69a;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: auto;
+      padding: 18px 14px 40px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    button {
+      flex: 1;
+      border: 0;
+      border-radius: 12px;
+      padding: 14px 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #generateBtn {
+      background: #18a566;
+      color: white;
+    }
+
+    #refreshBtn {
+      background: #17283e;
+      color: white;
+      border: 1px solid #29435f;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .date-box {
+      background: #0b1729;
+      border: 1px solid #1b304b;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+      text-align: center;
+      color: #b7c7d9;
+    }
+
+    .prediction-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      background: #0b1729;
+      border: 1px solid #1b304b;
+      border-radius: 16px;
+      padding: 17px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+    }
+
+    .match-number {
+      color: #6f
