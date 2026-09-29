@@ -1,0 +1,85 @@
+name: Update Football Fixtures
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-fixtures:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch fixtures from API-Football
+        env:
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+          from datetime import datetime, timedelta, timezone
+
+          key = os.environ["API_FOOTBALL_KEY"]
+
+          fixtures = []
+
+          for i in range(7):
+              date = (datetime.now(timezone.utc) + timedelta(days=i)).strftime("%Y-%m-%d")
+
+              url = (
+                  "https://v3.football.api-sports.io/fixtures"
+                  f"?date={date}"
+              )
+
+              request = urllib.request.Request(
+                  url,
+                  headers={
+                      "x-apisports-key": key
+                  }
+              )
+
+              try:
+                  with urllib.request.urlopen(request, timeout=30) as response:
+                      data = json.loads(response.read().decode("utf-8"))
+
+                  for item in data.get("response", []):
+                      fixtures.append(item)
+
+              except Exception as e:
+                  print(f"Error loading {date}: {e}")
+
+          output = {
+              "updated": datetime.now(timezone.utc).isoformat(),
+              "count": len(fixtures),
+              "fixtures": fixtures
+          }
+
+          os.makedirs("data", exist_ok=True)
+
+          with open("data/fixtures.json", "w", encoding="utf-8") as file:
+              json.dump(output, file, ensure_ascii=False, indent=2)
+
+          print(f"Saved {len(fixtures)} fixtures.")
+
+          PY
+
+      - name: Commit updated fixtures
+        run: |
+          git config user.name "Soccer Predictor AI"
+          git config user.email "actions@github.com"
+
+          git add data/fixtures.json
+
+          if git diff --cached --quiet; then
+            echo "No fixture changes."
+          else
+            git commit -m "Update live football fixtures"
+            git push
+          fi
