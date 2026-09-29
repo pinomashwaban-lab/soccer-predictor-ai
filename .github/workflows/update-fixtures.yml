@@ -2,7 +2,7 @@ name: Update Football Fixtures
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "0 */4 * * *"
   workflow_dispatch:
 
 permissions:
@@ -16,57 +16,146 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Fetch fixtures from API-Football
+      - name: Fetch upcoming global fixtures
         env:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
         run: |
           python3 - <<'PY'
           import json
           import os
+          import sys
+          import urllib.parse
           import urllib.request
-          from datetime import datetime, timedelta, timezone
+          from datetime import datetime, timedelta
+          from zoneinfo import ZoneInfo
 
-          key = os.environ["API_FOOTBALL_KEY"]
+          key = os.environ.get("API_FOOTBALL_KEY")
+
+          if not key:
+              print("ERROR: API_FOOTBALL_KEY secret is missing.")
+              sys.exit(1)
+
+          tz = ZoneInfo("Africa/Johannesburg")
+
+          today = datetime.now(tz).date()
+          from_date = today.strftime("%Y-%m-%d")
+          to_date = (today + timedelta(days=7)).strftime("%Y-%m-%d")
+
+          base_url = "https://v3.football.api-sports.io/fixtures"
 
           fixtures = []
+          seen = set()
 
-          for i in range(7):
-              date = (datetime.now(timezone.utc) + timedelta(days=i)).strftime("%Y-%m-%d")
+          page = 1
+          max_pages = 10
 
-              url = (
-                  "https://v3.football.api-sports.io/fixtures"
-                  f"?date={date}"
-              )
+          while page <= max_pages:
+
+              params = {
+                  "from": from_date,
+                  "to": to_date,
+                  "timezone": "Africa/Johannesburg",
+                  "page": page
+              }
+
+              url = base_url + "?" + urllib.parse.urlencode(params)
 
               request = urllib.request.Request(
                   url,
                   headers={
-                      "x-apisports-key": key
-                  }
+                      "x-apisports-key": key,
+                      "Accept": "application/json"
+                  },
+                  method="GET"
               )
 
               try:
-                  with urllib.request.urlopen(request, timeout=30) as response:
-                      data = json.loads(response.read().decode("utf-8"))
+                  with urllib.request.urlopen(request, timeout=60) as response:
+                      body = response.read().decode("utf-8")
+                      data = json.loads(body)
 
-                  for item in data.get("response", []):
-                      fixtures.append(item)
+              except Exception as error:
+                  print(f"ERROR requesting page {page}: {error}")
+                  sys.exit(1)
 
-              except Exception as e:
-                  print(f"Error loading {date}: {e}")
+              errors = data.get("errors") or {}
+              results = data.get("results", 0)
+              paging = data.get("paging") or {}
+
+              print(
+                  f"Page {page}: "
+                  f"results={results}, "
+                  f"paging={paging}, "
+                  f"errors={errors}"
+              )
+
+              if errors:
+                  print("API-FOOTBALL ERROR:")
+                  print(json.dumps(errors, indent=2))
+                  sys.exit(1)
+
+              for item in data.get("response", []):
+
+                  fixture_data = item.get("fixture", {})
+
+                  fixture_id = fixture_data.get("id")
+
+                  if fixture_id is not None:
+
+                      if fixture_id not in seen:
+                          seen.add(fixture_id)
+                          fixtures.append(item)
+
+              total_pages = int(
+                  paging.get("total", 1) or 1
+              )
+
+              if page >= total_pages:
+                  break
+
+              page += 1
+
+          if total_pages > max_pages:
+              print(
+                  f"WARNING: API reports {total_pages} pages. "
+                  f"Only the first {max_pages} pages were downloaded."
+              )
+
+          fixtures.sort(
+              key=lambda item:
+              item.get("fixture", {}).get("timestamp", 0)
+          )
 
           output = {
-              "updated": datetime.now(timezone.utc).isoformat(),
+              "updated": datetime.now(tz).isoformat(),
+              "from": from_date,
+              "to": to_date,
               "count": len(fixtures),
               "fixtures": fixtures
           }
 
           os.makedirs("data", exist_ok=True)
 
-          with open("data/fixtures.json", "w", encoding="utf-8") as file:
-              json.dump(output, file, ensure_ascii=False, indent=2)
+          with open(
+              "data/fixtures.json",
+              "w",
+              encoding="utf-8"
+          ) as file:
+              json.dump(
+                  output,
+                  file,
+                  ensure_ascii=False,
+                  indent=2
+              )
 
-          print(f"Saved {len(fixtures)} fixtures.")
+          print("")
+          print("======================================")
+          print("SOCCER PREDICTOR AI FIXTURE UPDATE")
+          print("======================================")
+          print(f"Date range: {from_date} to {to_date}")
+          print(f"Pages downloaded: {page}")
+          print(f"Saved fixtures: {len(fixtures)}")
+          print("======================================")
 
           PY
 
