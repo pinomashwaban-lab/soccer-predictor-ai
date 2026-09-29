@@ -30,7 +30,7 @@ header {
 }
 
 .logo {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: bold;
 }
 
@@ -81,10 +81,6 @@ button {
     cursor: pointer;
     background: #20c76a;
     color: #041108;
-}
-
-button:hover {
-    opacity: 0.9;
 }
 
 .status {
@@ -141,7 +137,7 @@ button:hover {
     border-radius: 8px;
     padding: 10px;
     text-align: center;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 footer {
@@ -173,10 +169,12 @@ footer {
 
 <header>
     <div class="logo">⚽ SOCCER PREDICTOR AI LIVE</div>
+
     <div class="subtitle">
         🌍 Global Football • All Available Leagues
     </div>
 </header>
+
 
 <section class="dashboard">
 
@@ -197,6 +195,7 @@ footer {
 
 </section>
 
+
 <div class="buttons">
 
     <button onclick="loadFixtures()">
@@ -209,11 +208,14 @@ footer {
 
 </div>
 
+
 <div class="status" id="message">
-    Loading live football data...
+    🔄 Connecting to live football data...
 </div>
 
+
 <div class="predictions" id="predictions"></div>
+
 
 <footer>
     Predictions are statistical estimates and are not guaranteed results.
@@ -221,299 +223,605 @@ footer {
 
 </div>
 
+
 <script>
+
+/*
+=========================================================
+SOCCER PREDICTOR AI LIVE
+PRIVATE API ARCHITECTURE
+=========================================================
+
+The API key is NOT stored in this website.
+
+GitHub Actions uses the private API key and creates:
+
+data/fixtures.json
+
+This website only reads that public data file.
+=========================================================
+*/
+
+
+const FIXTURE_FILE = "./data/fixtures.json";
 
 let fixtures = [];
 
-const FIXTURE_FILE = "data/fixtures.json";
+let lastUpdated = null;
+
+
+/*
+=========================================================
+LOAD FIXTURES
+=========================================================
+*/
 
 async function loadFixtures() {
 
-    const message = document.getElementById("message");
+    const message =
+        document.getElementById("message");
 
-    message.textContent = "🔄 Loading live fixtures...";
+    const status =
+        document.getElementById("status");
 
-    document.getElementById("status").textContent = "LOADING";
+    message.textContent =
+        "🔄 Loading live football fixtures...";
+
+    status.textContent =
+        "LOADING";
+
 
     try {
 
         const response = await fetch(
-            FIXTURE_FILE + "?t=" + Date.now()
+            FIXTURE_FILE +
+            "?cache=" +
+            Date.now(),
+            {
+                cache: "no-store"
+            }
         );
 
+
         if (!response.ok) {
+
             throw new Error(
-                "Fixture file could not be loaded."
+                "HTTP " +
+                response.status +
+                " - " +
+                response.statusText
             );
+
         }
 
-        const data = await response.json();
 
-        fixtures = Array.isArray(data.fixtures)
-            ? data.fixtures
-            : [];
+        const data =
+            await response.json();
+
+
+        if (!data) {
+
+            throw new Error(
+                "The fixture file returned no data."
+            );
+
+        }
+
+
+        if (!Array.isArray(data.fixtures)) {
+
+            throw new Error(
+                "The fixture file does not contain a fixtures array."
+            );
+
+        }
+
+
+        fixtures =
+            data.fixtures;
+
+
+        lastUpdated =
+            data.updated || null;
+
 
         updateDashboard();
+
 
         if (fixtures.length === 0) {
 
-            message.textContent =
-                "⚠️ No upcoming fixtures were returned.";
+            status.textContent =
+                "EMPTY";
 
-            document.getElementById("status")
-                .textContent = "EMPTY";
+            message.textContent =
+                "⚠️ The live feed is connected, but no upcoming fixtures were returned.";
 
             return;
+
         }
 
+
+        status.textContent =
+            "LIVE";
+
+
+        let updateText =
+            "🟢 Live football data loaded successfully.";
+
+
+        if (lastUpdated) {
+
+            updateText +=
+                " Updated: " +
+                new Date(lastUpdated)
+                    .toLocaleString();
+
+        }
+
+
         message.textContent =
-            "🟢 Live fixture data loaded successfully.";
+            updateText;
 
-        document.getElementById("status")
-            .textContent = "LIVE";
 
-    } catch (error) {
+        /*
+        Automatically show predictions
+        after fixtures load.
+        */
 
-        console.error(error);
+        generatePredictions();
+
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Fixture loading error:",
+            error
+        );
+
 
         fixtures = [];
 
+
         updateDashboard();
 
-        document.getElementById("status")
-            .textContent = "ERROR";
 
-        message.textContent =
-            "❌ Could not load live fixtures. Please try again.";
+        status.textContent =
+            "ERROR";
+
+
+        message.innerHTML =
+            "❌ Could not load live fixtures.<br><br>" +
+            "<small>" +
+            escapeHtml(error.message) +
+            "</small>";
 
     }
+
 }
 
+
+/*
+=========================================================
+UPDATE DASHBOARD
+=========================================================
+*/
 
 function updateDashboard() {
 
-    document.getElementById("fixtureCount")
-        .textContent = fixtures.length;
+    document.getElementById(
+        "fixtureCount"
+    ).textContent =
+        fixtures.length;
 
-    const leagues = new Set();
 
-    fixtures.forEach(fixture => {
+    const leagues =
+        new Set();
 
-        const league =
-            fixture.league &&
-            fixture.league.name
-                ? fixture.league.name
-                : "Unknown";
 
-        leagues.add(league);
+    fixtures.forEach(
+        fixture => {
 
-    });
+            const league =
+                fixture.league &&
+                fixture.league.name
+                    ? fixture.league.name
+                    : "Unknown League";
 
-    document.getElementById("leagueCount")
-        .textContent = leagues.size;
+
+            leagues.add(
+                league
+            );
+
+        }
+    );
+
+
+    document.getElementById(
+        "leagueCount"
+    ).textContent =
+        leagues.size;
+
 }
 
+
+/*
+=========================================================
+GENERATE PREDICTIONS
+=========================================================
+*/
 
 function generatePredictions() {
 
     if (!fixtures.length) {
 
-        document.getElementById("message")
-            .textContent =
-            "⚠️ Load live fixtures first.";
+        document.getElementById(
+            "message"
+        ).textContent =
+            "⚠️ No fixtures are available yet.";
 
         return;
+
     }
 
-    const selected = [...fixtures]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 20);
 
-    renderPredictions(selected);
+    /*
+    Select up to 20 fixtures.
 
-    document.getElementById("message")
-        .textContent =
-        "🤖 Predictions generated from the available fixtures.";
+    The fixture source can contain
+    hundreds of matches.
+    */
+
+    const selected =
+        shuffleArray(
+            [...fixtures]
+        ).slice(
+            0,
+            20
+        );
+
+
+    renderPredictions(
+        selected
+    );
+
+
+    document.getElementById(
+        "message"
+    ).textContent =
+        "🤖 Predictions generated for " +
+        selected.length +
+        " upcoming matches.";
 
 }
 
+
+/*
+=========================================================
+PREDICTION ENGINE
+=========================================================
+
+This is currently a demonstration prediction engine.
+It does NOT claim 98% real-world accuracy.
+
+Later we can replace this with a real statistical model.
+=========================================================
+*/
 
 function makePrediction() {
 
     const outcomes = [
+
         "HOME WIN",
+
         "DRAW",
+
         "AWAY WIN"
+
     ];
+
 
     const outcome =
         outcomes[
             Math.floor(
-                Math.random() * outcomes.length
+                Math.random() *
+                outcomes.length
             )
         ];
 
+
     const confidence =
         Math.floor(
-            70 + Math.random() * 27
+            70 +
+            Math.random() *
+            27
         );
 
+
     return {
-        outcome,
-        confidence
+
+        outcome:
+            outcome,
+
+        confidence:
+            confidence
+
     };
+
 }
 
 
-function renderPredictions(list) {
+/*
+=========================================================
+RENDER PREDICTIONS
+=========================================================
+*/
+
+function renderPredictions(
+    list
+) {
 
     const container =
-        document.getElementById("predictions");
+        document.getElementById(
+            "predictions"
+        );
 
-    container.innerHTML = "";
 
-    list.forEach(fixture => {
+    container.innerHTML =
+        "";
 
-        const home =
-            fixture.teams &&
-            fixture.teams.home &&
-            fixture.teams.home.name
-                ? fixture.teams.home.name
-                : "Home Team";
 
-        const away =
-            fixture.teams &&
-            fixture.teams.away &&
-            fixture.teams.away.name
-                ? fixture.teams.away.name
-                : "Away Team";
+    list.forEach(
+        fixture => {
 
-        const league =
-            fixture.league &&
-            fixture.league.name
-                ? fixture.league.name
-                : "Unknown League";
+            const home =
+                fixture.teams &&
+                fixture.teams.home &&
+                fixture.teams.home.name
+                    ? fixture.teams.home.name
+                    : "Home Team";
 
-        const country =
-            fixture.league &&
-            fixture.league.country
-                ? fixture.league.country
-                : "";
 
-        const prediction =
-            makePrediction();
+            const away =
+                fixture.teams &&
+                fixture.teams.away &&
+                fixture.teams.away.name
+                    ? fixture.teams.away.name
+                    : "Away Team";
 
-        const matchDate =
-            fixture.fixture &&
-            fixture.fixture.date
-                ? new Date(
-                    fixture.fixture.date
-                  ).toLocaleString()
-                : "Time unavailable";
 
-        const card =
-            document.createElement("div");
+            const league =
+                fixture.league &&
+                fixture.league.name
+                    ? fixture.league.name
+                    : "Unknown League";
 
-        card.className = "match";
 
-        card.innerHTML = `
+            const country =
+                fixture.league &&
+                fixture.league.country
+                    ? fixture.league.country
+                    : "";
 
-            <div class="match-header">
 
-                <span>
-                    ${escapeHtml(country)}
-                </span>
+            const prediction =
+                makePrediction();
 
-                <span>
-                    ${escapeHtml(league)}
-                </span>
 
-            </div>
+            let matchDate =
+                "Time unavailable";
 
-            <div class="teams">
 
-                ${escapeHtml(home)}
+            if (
+                fixture.fixture &&
+                fixture.fixture.date
+            ) {
 
-                <br>
+                matchDate =
+                    new Date(
+                        fixture.fixture.date
+                    ).toLocaleString();
 
-                VS
+            }
 
-                <br>
 
-                ${escapeHtml(away)}
+            const card =
+                document.createElement(
+                    "div"
+                );
 
-            </div>
 
-            <div class="prediction">
+            card.className =
+                "match";
 
-                🤖 ${prediction.outcome}
 
-            </div>
+            card.innerHTML = `
 
-            <div class="details">
+                <div class="match-header">
 
-                <div class="detail">
+                    <span>
+                        🌍 ${escapeHtml(country)}
+                    </span>
 
-                    CONFIDENCE
-
-                    <br>
-
-                    <strong>
-                        ${prediction.confidence}%
-                    </strong>
+                    <span>
+                        ${escapeHtml(league)}
+                    </span>
 
                 </div>
 
-                <div class="detail">
 
-                    MATCH TIME
+                <div class="teams">
 
-                    <br>
-
-                    <strong>
-                        ${escapeHtml(matchDate)}
-                    </strong>
-
-                </div>
-
-                <div class="detail">
-
-                    STATUS
+                    ${escapeHtml(home)}
 
                     <br>
 
-                    <strong>
-                        UPCOMING
-                    </strong>
+                    <span style="font-size:13px;">
+                        VS
+                    </span>
+
+                    <br>
+
+                    ${escapeHtml(away)}
 
                 </div>
 
-            </div>
 
-        `;
+                <div class="prediction">
 
-        container.appendChild(card);
+                    🤖 ${prediction.outcome}
 
-    });
+                </div>
+
+
+                <div class="details">
+
+                    <div class="detail">
+
+                        CONFIDENCE
+
+                        <br>
+
+                        <strong>
+                            ${prediction.confidence}%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        MATCH TIME
+
+                        <br>
+
+                        <strong>
+                            ${escapeHtml(matchDate)}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        STATUS
+
+                        <br>
+
+                        <strong>
+                            UPCOMING
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
 
 }
 
 
-function escapeHtml(value) {
+/*
+=========================================================
+SHUFFLE
+=========================================================
+*/
 
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+function shuffleArray(
+    array
+) {
+
+    for (
+        let i = array.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() *
+                (i + 1)
+            );
+
+
+        [
+            array[i],
+            array[j]
+        ] =
+        [
+            array[j],
+            array[i]
+        ];
+
+    }
+
+
+    return array;
 
 }
 
+
+/*
+=========================================================
+SECURITY
+=========================================================
+*/
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value
+    )
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/*
+=========================================================
+START APPLICATION
+=========================================================
+*/
 
 document.addEventListener(
     "DOMContentLoaded",
-    () => {
+    function() {
 
         loadFixtures();
 
