@@ -7,13 +7,11 @@
 <title>Soccer Predictor AI Live</title>
 
 <style>
-
 * {
     box-sizing: border-box;
 }
 
-html,
-body {
+html, body {
     margin: 0;
     padding: 0;
     min-height: 100%;
@@ -26,16 +24,9 @@ body {
 }
 
 header {
-    background: linear-gradient(
-        135deg,
-        #071a0c,
-        #0d2915
-    );
-
+    background: linear-gradient(135deg, #071a0c, #0d2915);
     border-bottom: 2px solid #20e879;
-
     padding: 20px 15px;
-
     text-align: center;
 }
 
@@ -87,18 +78,13 @@ header {
 button {
     width: 100%;
     padding: 16px;
-
     border: none;
     border-radius: 11px;
-
     background: #20e879;
     color: #001d0b;
-
     font-size: 17px;
     font-weight: bold;
-
     cursor: pointer;
-
     margin-bottom: 12px;
 }
 
@@ -114,16 +100,11 @@ button:active {
 
 .status {
     padding: 13px;
-
     border-radius: 10px;
-
     background: #0d1b11;
     border: 1px solid #204b2d;
-
     text-align: center;
-
     margin-bottom: 15px;
-
     font-size: 13px;
 }
 
@@ -141,13 +122,9 @@ button:active {
 
 .card {
     background: #0c1710;
-
     border: 1px solid #21472d;
-
     border-radius: 14px;
-
     padding: 16px;
-
     margin-bottom: 14px;
 }
 
@@ -166,152 +143,107 @@ button:active {
 
 .teams {
     display: grid;
-
-    grid-template-columns:
-        1fr
-        45px
-        1fr;
-
+    grid-template-columns: 1fr 45px 1fr;
     align-items: center;
-
     gap: 8px;
 }
 
 .team {
     text-align: center;
-
     font-size: 16px;
-
     font-weight: bold;
 }
 
 .vs {
     text-align: center;
-
     color: #7f8d82;
-
     font-size: 12px;
 }
 
 .time {
     text-align: center;
-
     color: #aaa;
-
     font-size: 11px;
-
     margin-top: 8px;
 }
 
 .prediction {
     background: #07170c;
-
     border-radius: 10px;
-
     margin-top: 14px;
-
     padding: 13px;
 }
 
 .prediction-title {
     color: #8d9b90;
-
     font-size: 11px;
 }
 
 .prediction-result {
     color: #20ff83;
-
     font-size: 20px;
-
     font-weight: bold;
-
     margin-top: 4px;
 }
 
 .confidence {
     margin-top: 8px;
-
     color: #ffffff;
 }
 
 .confidence span {
     color: #20ff83;
-
     font-size: 20px;
-
     font-weight: bold;
 }
 
 .probabilities {
     display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
+    grid-template-columns: repeat(3, 1fr);
     gap: 6px;
-
     margin-top: 12px;
 }
 
 .prob {
     background: #0e2114;
-
     border-radius: 7px;
-
     padding: 8px 3px;
-
     text-align: center;
-
     color: #8c998e;
-
     font-size: 10px;
 }
 
 .prob strong {
     display: block;
-
     color: #ffffff;
-
     font-size: 14px;
-
     margin-top: 3px;
 }
 
 .empty {
     padding: 30px 15px;
-
     text-align: center;
-
     color: #9ca79e;
-
     background: #0c1710;
-
     border-radius: 12px;
 }
 
 .warning {
     color: #ffd45a;
-
     font-size: 12px;
-
     margin-top: 10px;
-
+    margin-bottom: 12px;
     line-height: 1.5;
 }
 
 .footer {
     text-align: center;
-
     padding: 25px 10px;
-
     color: #566258;
-
     font-size: 10px;
 }
 
 @media (max-width: 500px) {
-
     .team {
         font-size: 14px;
     }
@@ -319,16 +251,13 @@ button:active {
     .logo {
         font-size: 21px;
     }
-
 }
-
 </style>
 </head>
 
 <body>
 
 <header>
-
     <div class="logo">
         ⚽ SOCCER PREDICTOR AI LIVE
     </div>
@@ -336,158 +265,89 @@ button:active {
     <div class="subtitle">
         🌍 Global Football • All Available Leagues
     </div>
-
 </header>
 
-
 <div class="container">
-
 
     <div class="dashboard">
 
         <div class="box">
-
-            <div class="box-title">
-                FIXTURES
-            </div>
-
-            <div
-                class="box-value"
-                id="fixtureCount"
-            >
-                0
-            </div>
-
+            <div class="box-title">FIXTURES</div>
+            <div class="box-value" id="fixtureCount">0</div>
         </div>
 
-
         <div class="box">
-
-            <div class="box-title">
-                LEAGUES
-            </div>
-
-            <div
-                class="box-value"
-                id="leagueCount"
-            >
-                0
-            </div>
-
+            <div class="box-title">LEAGUES</div>
+            <div class="box-value" id="leagueCount">0</div>
         </div>
 
-
         <div class="box">
-
-            <div class="box-title">
-                STATUS
-            </div>
-
-            <div
-                class="box-value"
-                id="engineStatus"
-            >
-                READY
-            </div>
-
+            <div class="box-title">STATUS</div>
+            <div class="box-value" id="engineStatus">READY</div>
         </div>
 
     </div>
 
-
-    <button
-        onclick="generatePredictions()"
-    >
+    <button onclick="generatePredictions()">
         🔮 GENERATE GLOBAL PREDICTIONS
     </button>
 
-
-    <button
-        class="secondary"
-        onclick="loadFixtures()"
-    >
+    <button class="secondary" onclick="loadFixtures()">
         🌍 LOAD ALL UPCOMING FIXTURES
     </button>
 
-
-    <div
-        id="status"
-        class="status good"
-    >
+    <div id="status" class="status good">
         🟢 Predictor ready
     </div>
 
-
     <div id="results">
-
         <div class="empty">
-
-            Press
-            <b>
-                GENERATE GLOBAL PREDICTIONS
-            </b>
-
-            to start the prediction engine.
-
+            Press <b>GENERATE GLOBAL PREDICTIONS</b> to start the prediction engine.
         </div>
-
     </div>
 
-
 </div>
-
 
 <div class="footer">
-
     Soccer Predictor AI Live
-
-    <br>
-
-    Predictions are statistical estimates
-    and are not guaranteed results.
-
+    <br><br>
+    Predictions are statistical estimates and are not guaranteed results.
 </div>
-
 
 <script>
 
-
-/*
-==========================================================
-SOCCER PREDICTOR AI LIVE
-GLOBAL LEAGUE ENGINE
-==========================================================
-*/
+/* ==========================================================
+   SOCCER PREDICTOR AI LIVE
+   GLOBAL FOOTBALL FIXTURE ENGINE
+   ========================================================== */
 
 
-/*
-==========================================================
-API CONFIGURATION
-==========================================================
-*/
+/* ==========================================================
+   API CONFIGURATION
+   ========================================================== */
 
 const API_URL =
     "https://v3.football.api-sports.io/fixtures";
 
 
 /*
-PUT YOUR API-FOOTBALL KEY HERE.
+   IMPORTANT:
 
-Example:
+   Replace YOUR_API_KEY_HERE with your real
+   API-Football key when you have it.
 
-const API_KEY = "123456789abcdef";
+   Example:
 
+   const API_KEY = "123456789abcdef";
 */
 
 const API_KEY =
     "YOUR_API_KEY_HERE";
 
 
-/*
-==========================================================
-SETTINGS
-==========================================================
-*/
+/* ==========================================================
+   SETTINGS
+   ========================================================== */
 
 const DAYS_TO_SEARCH = 7;
 
@@ -496,11 +356,9 @@ const MAX_FIXTURES = 500;
 const NUMBER_OF_PREDICTIONS = 20;
 
 
-/*
-==========================================================
-GLOBAL DATA
-==========================================================
-*/
+/* ==========================================================
+   GLOBAL DATA
+   ========================================================== */
 
 let fixtures = [];
 
@@ -509,69 +367,48 @@ let predictionMatches = [];
 let usingDemoData = false;
 
 
-/*
-==========================================================
-STATUS
-==========================================================
-*/
+/* ==========================================================
+   STATUS DISPLAY
+   ========================================================== */
 
-function setStatus(
-    message,
-    type
-) {
+function setStatus(message, type) {
 
     const status =
-        document.getElementById(
-            "status"
-        );
+        document.getElementById("status");
+
+    if (!status) {
+        return;
+    }
 
     status.className =
-        "status " +
-        (
-            type ||
-            "good"
-        );
+        "status " + (type || "good");
 
     status.innerHTML =
         message;
-
 }
 
 
-/*
-==========================================================
-ENGINE STATUS
-==========================================================
-*/
+/* ==========================================================
+   ENGINE STATUS
+   ========================================================== */
 
-function setEngineStatus(
-    message
-) {
+function setEngineStatus(message) {
 
     const element =
-        document.getElementById(
-            "engineStatus"
-        );
+        document.getElementById("engineStatus");
 
     if (element) {
-
         element.textContent =
             message;
-
     }
-
 }
 
 
-/*
-==========================================================
-DATE FORMAT
-==========================================================
-*/
+/* ==========================================================
+   DATE STRING
+   ========================================================== */
 
-function dateString(
-    date
-) {
+function dateString(date) {
 
     const year =
         date.getFullYear();
@@ -579,18 +416,12 @@ function dateString(
     const month =
         String(
             date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
+        ).padStart(2, "0");
 
     const day =
         String(
             date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
+        ).padStart(2, "0");
 
     return (
         year +
@@ -599,47 +430,988 @@ function dateString(
         "-" +
         day
     );
-
 }
 
 
-/*
-==========================================================
-ADD DAYS
-==========================================================
-*/
+/* ==========================================================
+   ADD DAYS
+   ========================================================== */
 
-function addDays(
-    date,
-    amount
-) {
+function addDays(date, amount) {
 
     const result =
-        new Date(
-            date
-        );
+        new Date(date);
 
     result.setDate(
-        result.getDate() +
-        amount
+        result.getDate() + amount
     );
 
     return result;
-
 }
 
 
-/*
-==========================================================
-FETCH ONE DAY
-==========================================================
-*/
+/* ==========================================================
+   FETCH ONE DAY
+   ========================================================== */
 
-async function fetchDay(
-    date
-) {
+async function fetchDay(date) {
 
     if (
         !API_KEY ||
-        API_KEY ===
-        "YOUR_API_KEY_H
+        API_KEY === "YOUR_API_KEY_HERE"
+    ) {
+        throw new Error("API key missing");
+    }
+
+    const url =
+        API_URL +
+        "?date=" +
+        dateString(date);
+
+    const response =
+        await fetch(
+            url,
+            {
+                method: "GET",
+
+                headers: {
+                    "x-apisports-key":
+                        API_KEY
+                }
+            }
+        );
+
+    if (!response.ok) {
+
+        throw new Error(
+            "API HTTP " +
+            response.status
+        );
+    }
+
+    const data =
+        await response.json();
+
+    if (
+        !data ||
+        !Array.isArray(data.response)
+    ) {
+        return [];
+    }
+
+    return data.response;
+}
+
+
+/* ==========================================================
+   VALID FIXTURE
+   ========================================================== */
+
+function validFixture(match) {
+
+    return (
+        match &&
+        match.fixture &&
+        match.fixture.id &&
+        match.teams &&
+        match.teams.home &&
+        match.teams.away &&
+        match.teams.home.name &&
+        match.teams.away.name
+    );
+}
+
+
+/* ==========================================================
+   LOAD ALL UPCOMING FIXTURES
+   ========================================================== */
+
+async function loadFixtures() {
+
+    fixtures = [];
+
+    usingDemoData = false;
+
+    setEngineStatus("LOADING");
+
+    setStatus(
+        "🌍 Searching upcoming matches across all available leagues...",
+        "loading"
+    );
+
+
+    /* --------------------------------------------------------
+       DEMO MODE
+       -------------------------------------------------------- */
+
+    if (
+        API_KEY === "YOUR_API_KEY_HERE"
+    ) {
+
+        usingDemoData = true;
+
+        fixtures =
+            createDemoFixtures();
+
+        updateCounters();
+
+        setEngineStatus("DEMO");
+
+        setStatus(
+            "🟡 Demo mode active. Add your API key for live fixtures.",
+            "loading"
+        );
+
+        return fixtures;
+    }
+
+
+    /* --------------------------------------------------------
+       SEARCH MULTIPLE FUTURE DAYS
+       -------------------------------------------------------- */
+
+    for (
+        let day = 0;
+        day <= DAYS_TO_SEARCH;
+        day++
+    ) {
+
+        try {
+
+            const date =
+                addDays(
+                    new Date(),
+                    day
+                );
+
+            const dayFixtures =
+                await fetchDay(date);
+
+            if (
+                Array.isArray(dayFixtures)
+            ) {
+
+                fixtures.push(
+                    ...dayFixtures
+                );
+            }
+
+            if (
+                fixtures.length >=
+                MAX_FIXTURES
+            ) {
+                break;
+            }
+
+        } catch (error) {
+
+            console.log(
+                "Fixture error:",
+                error
+            );
+        }
+    }
+
+
+    /* --------------------------------------------------------
+       REMOVE DUPLICATES
+       -------------------------------------------------------- */
+
+    const unique =
+        new Map();
+
+    fixtures.forEach(
+        function(match) {
+
+            if (
+                validFixture(match)
+            ) {
+
+                unique.set(
+                    match.fixture.id,
+                    match
+                );
+            }
+        }
+    );
+
+    fixtures =
+        Array.from(
+            unique.values()
+        );
+
+
+    /* --------------------------------------------------------
+       SORT BY KICKOFF
+       -------------------------------------------------------- */
+
+    fixtures.sort(
+        function(a, b) {
+
+            return (
+                new Date(
+                    a.fixture.date
+                ) -
+                new Date(
+                    b.fixture.date
+                )
+            );
+        }
+    );
+
+
+    updateCounters();
+
+
+    /* --------------------------------------------------------
+       NO LIVE DATA
+       -------------------------------------------------------- */
+
+    if (
+        fixtures.length === 0
+    ) {
+
+        usingDemoData = true;
+
+        fixtures =
+            createDemoFixtures();
+
+        updateCounters();
+
+        setEngineStatus("DEMO");
+
+        setStatus(
+            "⚠️ No live fixtures returned. Demo fixtures loaded.",
+            "error"
+        );
+
+        return fixtures;
+    }
+
+
+    /* --------------------------------------------------------
+       LIVE DATA
+       -------------------------------------------------------- */
+
+    setEngineStatus("LIVE");
+
+    setStatus(
+        "🟢 Global fixtures loaded successfully.",
+        "good"
+    );
+
+    return fixtures;
+}
+
+
+/* ==========================================================
+   UPDATE DASHBOARD COUNTERS
+   ========================================================== */
+
+function updateCounters() {
+
+    const fixtureElement =
+        document.getElementById(
+            "fixtureCount"
+        );
+
+    const leagueElement =
+        document.getElementById(
+            "leagueCount"
+        );
+
+
+    if (fixtureElement) {
+
+        fixtureElement.textContent =
+            fixtures.length;
+    }
+
+
+    const leagues =
+        new Set();
+
+
+    fixtures.forEach(
+        function(match) {
+
+            if (
+                match.league &&
+                match.league.name
+            ) {
+
+                leagues.add(
+                    match.league.name
+                );
+            }
+        }
+    );
+
+
+    if (leagueElement) {
+
+        leagueElement.textContent =
+            leagues.size;
+    }
+}
+
+
+/* ==========================================================
+   DEMO FIXTURES
+   ========================================================== */
+
+function createDemoFixtures() {
+
+    const teams = [
+
+        [
+            "England",
+            "Premier League",
+            "Arsenal",
+            "Chelsea"
+        ],
+
+        [
+            "Spain",
+            "La Liga",
+            "Barcelona",
+            "Sevilla"
+        ],
+
+        [
+            "Italy",
+            "Serie A",
+            "Inter",
+            "Roma"
+        ],
+
+        [
+            "Germany",
+            "Bundesliga",
+            "Bayern Munich",
+            "Dortmund"
+        ],
+
+        [
+            "France",
+            "Ligue 1",
+            "PSG",
+            "Lyon"
+        ],
+
+        [
+            "South Africa",
+            "Premier Soccer League",
+            "Mamelodi Sundowns",
+            "Kaizer Chiefs"
+        ],
+
+        [
+            "Brazil",
+            "Serie A",
+            "Flamengo",
+            "Palmeiras"
+        ],
+
+        [
+            "Argentina",
+            "Primera Division",
+            "River Plate",
+            "Boca Juniors"
+        ],
+
+        [
+            "Netherlands",
+            "Eredivisie",
+            "Ajax",
+            "PSV"
+        ],
+
+        [
+            "Portugal",
+            "Primeira Liga",
+            "Benfica",
+            "Porto"
+        ],
+
+        [
+            "Turkey",
+            "Super Lig",
+            "Galatasaray",
+            "Fenerbahce"
+        ],
+
+        [
+            "USA",
+            "MLS",
+            "LA Galaxy",
+            "Inter Miami"
+        ],
+
+        [
+            "Mexico",
+            "Liga MX",
+            "Club America",
+            "Tigres"
+        ],
+
+        [
+            "Scotland",
+            "Premiership",
+            "Celtic",
+            "Rangers"
+        ],
+
+        [
+            "Belgium",
+            "Pro League",
+            "Club Brugge",
+            "Anderlecht"
+        ]
+
+    ];
+
+
+    return teams.map(
+        function(item, index) {
+
+            const kickoff =
+                addDays(
+                    new Date(),
+                    index % 7
+                );
+
+            kickoff.setHours(
+                15 + (index % 5),
+                0,
+                0,
+                0
+            );
+
+            return {
+
+                fixture: {
+
+                    id:
+                        "demo-" +
+                        index,
+
+                    date:
+                        kickoff.toISOString()
+                },
+
+                league: {
+
+                    country:
+                        item[0],
+
+                    name:
+                        item[1]
+                },
+
+                teams: {
+
+                    home: {
+
+                        name:
+                            item[2]
+                    },
+
+                    away: {
+
+                        name:
+                            item[3]
+                    }
+                }
+            };
+        }
+    );
+}
+
+
+/* ==========================================================
+   SHUFFLE
+   ========================================================== */
+
+function shuffle(array) {
+
+    const result =
+        [...array];
+
+    for (
+        let i =
+            result.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        const j =
+            Math.floor(
+                Math.random() *
+                (i + 1)
+            );
+
+        const temp =
+            result[i];
+
+        result[i] =
+            result[j];
+
+        result[j] =
+            temp;
+    }
+
+    return result;
+}
+
+
+/* ==========================================================
+   PREDICTION ENGINE
+   ========================================================== */
+
+function makePrediction(match) {
+
+    let home =
+        45 +
+        Math.random() * 25;
+
+    let away =
+        45 +
+        Math.random() * 25;
+
+
+    /* Home advantage */
+
+    home += 4;
+
+
+    const total =
+        home + away;
+
+
+    let homePct =
+        Math.round(
+            home /
+            total *
+            100
+        );
+
+    let awayPct =
+        Math.round(
+            away /
+            total *
+            100
+        );
+
+    let drawPct =
+        100 -
+        homePct -
+        awayPct;
+
+
+    if (drawPct < 8) {
+
+        drawPct = 8;
+
+        const remaining = 92;
+
+        const combined =
+            homePct +
+            awayPct;
+
+        homePct =
+            Math.round(
+                homePct /
+                combined *
+                remaining
+            );
+
+        awayPct =
+            remaining -
+            homePct;
+    }
+
+
+    let prediction;
+
+
+    if (
+        Math.abs(
+            homePct -
+            awayPct
+        ) <= 5
+    ) {
+
+        prediction =
+            "DRAW / CLOSE MATCH";
+
+    } else if (
+        homePct > awayPct
+    ) {
+
+        prediction =
+            "HOME WIN";
+
+    } else {
+
+        prediction =
+            "AWAY WIN";
+    }
+
+
+    const difference =
+        Math.abs(
+            homePct -
+            awayPct
+        );
+
+
+    /*
+       This is only a demo statistical
+       confidence value. It is NOT a
+       guarantee of actual match accuracy.
+    */
+
+    const confidence =
+        Math.min(
+            96,
+            Math.max(
+                58,
+                58 + difference
+            )
+        );
+
+
+    return {
+
+        prediction:
+            prediction,
+
+        confidence:
+            Math.round(confidence),
+
+        home:
+            homePct,
+
+        draw:
+            drawPct,
+
+        away:
+            awayPct
+    };
+}
+
+
+/* ==========================================================
+   GENERATE PREDICTIONS
+   ========================================================== */
+
+async function generatePredictions() {
+
+    const results =
+        document.getElementById(
+            "results"
+        );
+
+
+    results.innerHTML = "";
+
+
+    setEngineStatus("WORKING");
+
+
+    setStatus(
+        "🔄 Building global prediction pool...",
+        "loading"
+    );
+
+
+    /* --------------------------------------------------------
+       LOAD FIXTURES IF NECESSARY
+       -------------------------------------------------------- */
+
+    if (
+        fixtures.length === 0
+    ) {
+
+        await loadFixtures();
+    }
+
+
+    const valid =
+        fixtures.filter(
+            validFixture
+        );
+
+
+    if (
+        valid.length === 0
+    ) {
+
+        results.innerHTML = `
+            <div class="empty">
+                ❌ No valid matches are available.
+            </div>
+        `;
+
+        setEngineStatus(
+            "NO DATA"
+        );
+
+        return;
+    }
+
+
+    /* --------------------------------------------------------
+       USE ENTIRE FIXTURE POOL
+       -------------------------------------------------------- */
+
+    const shuffled =
+        shuffle(valid);
+
+
+    predictionMatches =
+        shuffled.slice(
+            0,
+            Math.min(
+                NUMBER_OF_PREDICTIONS,
+                shuffled.length
+            )
+        );
+
+
+    renderPredictions(
+        predictionMatches
+    );
+
+
+    setEngineStatus("LIVE");
+
+
+    setStatus(
+        "🟢 " +
+        predictionMatches.length +
+        " predictions generated from " +
+        valid.length +
+        " available fixtures.",
+        "good"
+    );
+}
+
+
+/* ==========================================================
+   RENDER PREDICTIONS
+   ========================================================== */
+
+function renderPredictions(matches) {
+
+    const results =
+        document.getElementById(
+            "results"
+        );
+
+
+    results.innerHTML = "";
+
+
+    matches.forEach(
+        function(match) {
+
+            const prediction =
+                makePrediction(match);
+
+
+            const league =
+                match.league &&
+                match.league.name
+                ?
+                match.league.name
+                :
+                "Unknown League";
+
+
+            const country =
+                match.league &&
+                match.league.country
+                ?
+                match.league.country
+                :
+                "International";
+
+
+            const home =
+                match.teams.home.name;
+
+
+            const away =
+                match.teams.away.name;
+
+
+            const kickoff =
+                new Date(
+                    match.fixture.date
+                );
+
+
+            const time =
+                kickoff.toLocaleString();
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "card";
+
+
+            card.innerHTML = `
+
+                <div class="league">
+                    🌍 ${escapeHtml(league)}
+                </div>
+
+                <div class="country">
+                    ${escapeHtml(country)}
+                </div>
+
+                <div class="teams">
+
+                    <div class="team">
+                        ${escapeHtml(home)}
+                    </div>
+
+                    <div class="vs">
+                        VS
+                    </div>
+
+                    <div class="team">
+                        ${escapeHtml(away)}
+                    </div>
+
+                </div>
+
+                <div class="time">
+                    🕒 ${escapeHtml(time)}
+                </div>
+
+                <div class="prediction">
+
+                    <div class="prediction-title">
+                        AI PREDICTION
+                    </div>
+
+                    <div class="prediction-result">
+                        ${prediction.prediction}
+                    </div>
+
+                    <div class="confidence">
+
+                        Confidence:
+
+                        <span>
+                            ${prediction.confidence}%
+                        </span>
+
+                    </div>
+
+                    <div class="probabilities">
+
+                        <div class="prob">
+                            HOME
+                            <strong>
+                                ${prediction.home}%
+                            </strong>
+                        </div>
+
+                        <div class="prob">
+                            DRAW
+                            <strong>
+                                ${prediction.draw}%
+                            </strong>
+                        </div>
+
+                        <div class="prob">
+                            AWAY
+                            <strong>
+                                ${prediction.away}%
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+
+            results.appendChild(card);
+        }
+    );
+
+
+    /* --------------------------------------------------------
+       DEMO WARNING
+       -------------------------------------------------------- */
+
+    if (usingDemoData) {
+
+        const warning =
+            document.createElement(
+                "div"
+            );
+
+        warning.className =
+            "warning";
+
+        warning.innerHTML =
+            "⚠️ Demo mode is active. " +
+            "Enter your API-Football key " +
+            "to load real upcoming fixtures.";
+
+        results.prepend(
+            warning
+        );
+    }
+}
+
+
+/* ==========================================================
+   BASIC HTML ESCAPE
+   ========================================================== */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* ==========================================================
+   PAGE START
+   ========================================================== */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        setStatus(
+            "🟢 Ready. Press Generate to start.",
+            "good"
+        );
+
+        setEngineStatus(
+            "READY"
+        );
+    }
+);
+
+</script>
+
+</body>
+</html>
