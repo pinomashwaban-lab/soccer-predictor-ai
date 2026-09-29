@@ -7,29 +7,42 @@
 <title>Soccer Predictor AI Live</title>
 
 <style>
+
 * {
     box-sizing: border-box;
 }
 
+html,
 body {
     margin: 0;
     padding: 0;
+    min-height: 100%;
+}
+
+body {
     background: #061009;
     color: #ffffff;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 header {
-    background: linear-gradient(135deg, #071a0c, #0d2915);
+    background: linear-gradient(
+        135deg,
+        #071a0c,
+        #0d2915
+    );
+
     border-bottom: 2px solid #20e879;
+
     padding: 20px 15px;
+
     text-align: center;
 }
 
 .logo {
+    color: #20ff83;
     font-size: 25px;
     font-weight: 900;
-    color: #20ff83;
 }
 
 .subtitle {
@@ -67,20 +80,25 @@ header {
 .box-value {
     margin-top: 5px;
     color: #20ff83;
-    font-weight: bold;
     font-size: 17px;
+    font-weight: bold;
 }
 
 button {
     width: 100%;
     padding: 16px;
+
     border: none;
     border-radius: 11px;
+
     background: #20e879;
     color: #001d0b;
+
     font-size: 17px;
     font-weight: bold;
+
     cursor: pointer;
+
     margin-bottom: 12px;
 }
 
@@ -96,11 +114,16 @@ button:active {
 
 .status {
     padding: 13px;
+
     border-radius: 10px;
+
     background: #0d1b11;
     border: 1px solid #204b2d;
+
     text-align: center;
+
     margin-bottom: 15px;
+
     font-size: 13px;
 }
 
@@ -118,16 +141,20 @@ button:active {
 
 .card {
     background: #0c1710;
+
     border: 1px solid #21472d;
+
     border-radius: 14px;
+
     padding: 16px;
+
     margin-bottom: 14px;
 }
 
 .league {
     color: #20ff83;
-    font-weight: bold;
     font-size: 13px;
+    font-weight: bold;
     margin-bottom: 5px;
 }
 
@@ -139,68 +166,480 @@ button:active {
 
 .teams {
     display: grid;
-    grid-template-columns: 1fr 45px 1fr;
+
+    grid-template-columns:
+        1fr
+        45px
+        1fr;
+
     align-items: center;
+
     gap: 8px;
 }
 
 .team {
     text-align: center;
+
     font-size: 16px;
+
     font-weight: bold;
 }
 
 .vs {
     text-align: center;
+
     color: #7f8d82;
+
     font-size: 12px;
 }
 
 .time {
     text-align: center;
+
     color: #aaa;
+
     font-size: 11px;
+
     margin-top: 8px;
 }
 
 .prediction {
     background: #07170c;
+
     border-radius: 10px;
+
     margin-top: 14px;
+
     padding: 13px;
 }
 
 .prediction-title {
     color: #8d9b90;
+
     font-size: 11px;
 }
 
 .prediction-result {
     color: #20ff83;
+
     font-size: 20px;
+
     font-weight: bold;
+
     margin-top: 4px;
 }
 
 .confidence {
     margin-top: 8px;
+
     color: #ffffff;
 }
 
 .confidence span {
     color: #20ff83;
-    font-weight: bold;
+
     font-size: 20px;
+
+    font-weight: bold;
 }
 
 .probabilities {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
     gap: 6px;
+
     margin-top: 12px;
 }
 
 .prob {
     background: #0e2114;
+
     border-radius: 7px;
-   
+
+    padding: 8px 3px;
+
+    text-align: center;
+
+    color: #8c998e;
+
+    font-size: 10px;
+}
+
+.prob strong {
+    display: block;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    margin-top: 3px;
+}
+
+.empty {
+    padding: 30px 15px;
+
+    text-align: center;
+
+    color: #9ca79e;
+
+    background: #0c1710;
+
+    border-radius: 12px;
+}
+
+.warning {
+    color: #ffd45a;
+
+    font-size: 12px;
+
+    margin-top: 10px;
+
+    line-height: 1.5;
+}
+
+.footer {
+    text-align: center;
+
+    padding: 25px 10px;
+
+    color: #566258;
+
+    font-size: 10px;
+}
+
+@media (max-width: 500px) {
+
+    .team {
+        font-size: 14px;
+    }
+
+    .logo {
+        font-size: 21px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        ⚽ SOCCER PREDICTOR AI LIVE
+    </div>
+
+    <div class="subtitle">
+        🌍 Global Football • All Available Leagues
+    </div>
+
+</header>
+
+
+<div class="container">
+
+
+    <div class="dashboard">
+
+        <div class="box">
+
+            <div class="box-title">
+                FIXTURES
+            </div>
+
+            <div
+                class="box-value"
+                id="fixtureCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="box">
+
+            <div class="box-title">
+                LEAGUES
+            </div>
+
+            <div
+                class="box-value"
+                id="leagueCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="box">
+
+            <div class="box-title">
+                STATUS
+            </div>
+
+            <div
+                class="box-value"
+                id="engineStatus"
+            >
+                READY
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <button
+        onclick="generatePredictions()"
+    >
+        🔮 GENERATE GLOBAL PREDICTIONS
+    </button>
+
+
+    <button
+        class="secondary"
+        onclick="loadFixtures()"
+    >
+        🌍 LOAD ALL UPCOMING FIXTURES
+    </button>
+
+
+    <div
+        id="status"
+        class="status good"
+    >
+        🟢 Predictor ready
+    </div>
+
+
+    <div id="results">
+
+        <div class="empty">
+
+            Press
+            <b>
+                GENERATE GLOBAL PREDICTIONS
+            </b>
+
+            to start the prediction engine.
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="footer">
+
+    Soccer Predictor AI Live
+
+    <br>
+
+    Predictions are statistical estimates
+    and are not guaranteed results.
+
+</div>
+
+
+<script>
+
+
+/*
+==========================================================
+SOCCER PREDICTOR AI LIVE
+GLOBAL LEAGUE ENGINE
+==========================================================
+*/
+
+
+/*
+==========================================================
+API CONFIGURATION
+==========================================================
+*/
+
+const API_URL =
+    "https://v3.football.api-sports.io/fixtures";
+
+
+/*
+PUT YOUR API-FOOTBALL KEY HERE.
+
+Example:
+
+const API_KEY = "123456789abcdef";
+
+*/
+
+const API_KEY =
+    "YOUR_API_KEY_HERE";
+
+
+/*
+==========================================================
+SETTINGS
+==========================================================
+*/
+
+const DAYS_TO_SEARCH = 7;
+
+const MAX_FIXTURES = 500;
+
+const NUMBER_OF_PREDICTIONS = 20;
+
+
+/*
+==========================================================
+GLOBAL DATA
+==========================================================
+*/
+
+let fixtures = [];
+
+let predictionMatches = [];
+
+let usingDemoData = false;
+
+
+/*
+==========================================================
+STATUS
+==========================================================
+*/
+
+function setStatus(
+    message,
+    type
+) {
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+    status.className =
+        "status " +
+        (
+            type ||
+            "good"
+        );
+
+    status.innerHTML =
+        message;
+
+}
+
+
+/*
+==========================================================
+ENGINE STATUS
+==========================================================
+*/
+
+function setEngineStatus(
+    message
+) {
+
+    const element =
+        document.getElementById(
+            "engineStatus"
+        );
+
+    if (element) {
+
+        element.textContent =
+            message;
+
+    }
+
+}
+
+
+/*
+==========================================================
+DATE FORMAT
+==========================================================
+*/
+
+function dateString(
+    date
+) {
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+/*
+==========================================================
+ADD DAYS
+==========================================================
+*/
+
+function addDays(
+    date,
+    amount
+) {
+
+    const result =
+        new Date(
+            date
+        );
+
+    result.setDate(
+        result.getDate() +
+        amount
+    );
+
+    return result;
+
+}
+
+
+/*
+==========================================================
+FETCH ONE DAY
+==========================================================
+*/
+
+async function fetchDay(
+    date
+) {
+
+    if (
+        !API_KEY ||
+        API_KEY ===
+        "YOUR_API_KEY_H
